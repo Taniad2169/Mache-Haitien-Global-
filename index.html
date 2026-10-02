@@ -158,6 +158,9 @@
       transform: scale(0.98);
       box-shadow: 0 2px 8px rgba(7, 79, 148, 0.4);
     }
+    .save-status { margin-top: 12px; font-size: 0.95rem; text-align: center; min-height: 1.2em; }
+    .save-status.ok { color: #1b7a3d; }
+    .save-status.err { color: #b42318; }
   </style>
 </head>
 <body>
@@ -353,6 +356,7 @@
 
     <!-- Submit Button -->
     <button type="submit" class="submit-btn" data-key="submitBtn">Submit to WhatsApp</button>
+    <p id="saveStatus" class="save-status" role="status" aria-live="polite"></p>
   </form>
 </div>
 
@@ -375,7 +379,9 @@
       whatsappLabel: "Do you have WhatsApp?",
       whatsappWillingLabel: "Are you willing to get WhatsApp for communication?",
       commentLabel: "Comments (400 words max):",
-      submitBtn: "Submit to WhatsApp"
+      submitBtn: "Submit to WhatsApp",
+      savedMsg: "Saved! Thank you, your business was added to our directory list.",
+      saveErrMsg: "We couldn't save your entry. Your WhatsApp message was still sent."
     },
     fr: {
       langLabel: "Langue Préférée:",
@@ -393,7 +399,9 @@
       whatsappLabel: "Avez-vous WhatsApp?",
       whatsappWillingLabel: "Êtes-vous prêt à obtenir WhatsApp pour la communication?",
       commentLabel: "Commentaires (400 mots max):",
-      submitBtn: "Soumettre à WhatsApp"
+      submitBtn: "Soumettre à WhatsApp",
+      savedMsg: "Enregistré ! Merci, votre entreprise a été ajoutée à notre liste.",
+      saveErrMsg: "Nous n'avons pas pu enregistrer votre inscription. Votre message WhatsApp a quand même été envoyé."
     },
     ht: {
       langLabel: "Lang Preferans:",
@@ -411,7 +419,9 @@
       whatsappLabel: "Èske w gen WhatsApp?",
       whatsappWillingLabel: "Èske w prè pou w jwenn WhatsApp pou kominikasyon?",
       commentLabel: "Kòmantè (400 mo max):",
-      submitBtn: "Soumèt nan WhatsApp"
+      submitBtn: "Soumèt nan WhatsApp",
+      savedMsg: "Anrejistre! Mèsi, biznis ou ajoute nan lis nou an.",
+      saveErrMsg: "Nou pa t ka anrejistre enfòmasyon ou. Mesaj WhatsApp ou an te toujou voye."
     }
   };
 
@@ -497,6 +507,29 @@
     message += `*WhatsApp:* ${hasWhatsapp} ${hasWhatsapp === 'No' ? '(Willing to get: ' + willingWhatsapp + ')' : ''}\n`;
     message += `*Comments:* ${comments || 'None'}\n`;
 
+    // Save permanently to Firestore (runs in the background; WhatsApp still opens right away)
+    if (window.saveBusinessSubmission) {
+      const lang = document.getElementById('languageSelect').value;
+      window.saveBusinessSubmission({
+        language: lang,
+        ownerName: ownerName.trim(),
+        businessName: businessName.trim(),
+        city: city.trim(),
+        industry: industry,
+        industryOther: industry === 'Other' ? otherText.trim() : '',
+        yearsInBusiness: years,
+        country: country,
+        usState: country === 'United States' ? state : '',
+        hasSocialMedia: hasSocial,
+        socialMedia: Array.from(socialCheckboxes).map(cb => cb.value),
+        advertising: Array.from(adCheckboxes).map(cb => cb.value),
+        hasWhatsapp: hasWhatsapp,
+        willingToGetWhatsapp: hasWhatsapp === 'No' ? willingWhatsapp : '',
+        comments: comments.trim(),
+        source: 'mache-haitien-global-web'
+      }, lang);
+    }
+
     // Encode and Open WhatsApp
     const phone = "16468988279"; // Your number with country code
     const url = `https://wa.me/${phone}?text=${encodeURIComponent(message)}`;
@@ -510,6 +543,37 @@
     changeLanguage();
     // Ensure state box is hidden on load if US not selected
     toggleStates(document.getElementById('country'));
+  };
+</script>
+
+<!-- Firebase: saves every directory submission permanently in Firestore -->
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+  import { getFirestore, collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyBmVnWxX3rMOxh1LebUw2Up9nxm5C7HG8g",
+    authDomain: "mache-haitien-global.firebaseapp.com",
+    projectId: "mache-haitien-global",
+    storageBucket: "mache-haitien-global.firebasestorage.app",
+    messagingSenderId: "301352491781",
+    appId: "1:301352491781:web:42db1c2b31fe2bec48756c"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const db = getFirestore(app);
+
+  window.saveBusinessSubmission = async function (data, lang) {
+    const status = document.getElementById('saveStatus');
+    const t = (typeof translations !== 'undefined' && translations[lang]) || {};
+    try {
+      await addDoc(collection(db, 'business_submissions'), { ...data, createdAt: serverTimestamp() });
+      if (status) { status.className = 'save-status ok'; status.textContent = t.savedMsg || 'Saved!'; }
+      document.getElementById('businessForm').reset();
+    } catch (err) {
+      console.error('Firestore save failed:', err);
+      if (status) { status.className = 'save-status err'; status.textContent = t.saveErrMsg || 'Could not save.'; }
+    }
   };
 </script>
 

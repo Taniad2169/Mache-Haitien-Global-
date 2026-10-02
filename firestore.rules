@@ -1,0 +1,51 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Mache Haitien Global directory sign-ups.
+    // The public form may only ADD a new submission. Nobody can read, edit or
+    // delete submissions from the website; view them in the Firebase console.
+    match /business_submissions/{submissionId} {
+      allow create: if isValidSubmission(request.resource.data);
+      allow read, update, delete: if false;
+    }
+
+    // Everything else stays locked.
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    function str(v, maxLen) {
+      return v is string && v.size() <= maxLen;
+    }
+
+    function isValidSubmission(d) {
+      return d.keys().hasOnly([
+               'language', 'ownerName', 'businessName', 'city', 'industry',
+               'industryOther', 'yearsInBusiness', 'country', 'usState',
+               'hasSocialMedia', 'socialMedia', 'advertising', 'hasWhatsapp',
+               'willingToGetWhatsapp', 'comments', 'createdAt', 'source'
+             ])
+          && d.keys().hasAll(['ownerName', 'businessName', 'city', 'industry',
+                              'yearsInBusiness', 'country', 'createdAt'])
+          && str(d.ownerName, 120) && d.ownerName.size() > 0
+          && str(d.businessName, 160) && d.businessName.size() > 0
+          && str(d.city, 120) && d.city.size() > 0
+          && str(d.industry, 60) && d.industry.size() > 0
+          && str(d.yearsInBusiness, 30)
+          && str(d.country, 60)
+          && (!('language' in d) || str(d.language, 5))
+          && (!('industryOther' in d) || str(d.industryOther, 400))
+          && (!('usState' in d) || str(d.usState, 2))
+          && (!('hasSocialMedia' in d) || str(d.hasSocialMedia, 3))
+          && (!('socialMedia' in d) || (d.socialMedia is list && d.socialMedia.size() <= 6))
+          && (!('advertising' in d) || (d.advertising is list && d.advertising.size() <= 5))
+          && (!('hasWhatsapp' in d) || str(d.hasWhatsapp, 3))
+          && (!('willingToGetWhatsapp' in d) || str(d.willingToGetWhatsapp, 3))
+          && (!('comments' in d) || str(d.comments, 2400))
+          && (!('source' in d) || str(d.source, 40))
+          && d.createdAt == request.time;
+    }
+  }
+}
