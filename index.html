@@ -158,6 +158,7 @@
       transform: scale(0.98);
       box-shadow: 0 2px 8px rgba(7, 79, 148, 0.4);
     }
+    .privacy-note { font-size: 12.5px; color: #4a5b6a; background: #f3f8fd; border-radius: 8px; padding: 10px 12px; margin: 6px 0 0; line-height: 1.45; }
     .save-status { margin-top: 12px; font-size: 0.95rem; text-align: center; min-height: 1.2em; }
     .save-status.ok { color: #1b7a3d; }
     .save-status.err { color: #b42318; }
@@ -205,6 +206,24 @@
     <div class="form-group">
       <label data-key="businessLabel">Business Name:</label>
       <input type="text" id="businessName" required placeholder="...">
+    </div>
+
+    <!-- Business Phone / WhatsApp -->
+    <div class="form-group">
+      <label data-key="phoneLabel" for="bizPhone">Business Phone / WhatsApp (with country code):</label>
+      <input type="tel" id="bizPhone" required inputmode="tel" autocomplete="tel" maxlength="25" pattern="[0-9 \+\(\)\.\-]{7,25}" placeholder="+509 3XXX XXXX">
+    </div>
+
+    <!-- Email -->
+    <div class="form-group">
+      <label data-key="emailLabel" for="bizEmail">Business Email (private):</label>
+      <input type="email" id="bizEmail" autocomplete="email" maxlength="120" placeholder="name@example.com">
+    </div>
+
+    <!-- Website / Social link -->
+    <div class="form-group">
+      <label data-key="websiteLabel" for="bizWebsite">Website or social media link (optional):</label>
+      <input type="url" id="bizWebsite" maxlength="200" placeholder="https://">
     </div>
 
     <!-- City -->
@@ -355,6 +374,7 @@
     </div>
 
     <!-- Submit Button -->
+    <p class="privacy-note" data-key="privacyNote">Your business name, industry, city, phone and website will appear in our public directory so Rachel can help customers find you. Your name, email and comments stay private.</p>
     <button type="submit" class="submit-btn" data-key="submitBtn">Submit to WhatsApp</button>
     <p id="saveStatus" class="save-status" role="status" aria-live="polite"></p>
   </form>
@@ -366,6 +386,10 @@
     en: {
       langLabel: "Preferred Language:",
       ownerLabel: "Name of Owner:",
+      phoneLabel: "Business Phone / WhatsApp (with country code):",
+      emailLabel: "Business Email (private):",
+      websiteLabel: "Website or social media link (optional):",
+      privacyNote: "Your business name, industry, city, phone and website will appear in our public directory so Rachel can help customers find you. Your name, email and comments stay private.",
       businessLabel: "Business Name:",
       cityLabel: "City:",
       industryLabel: "Industry:",
@@ -386,6 +410,10 @@
     fr: {
       langLabel: "Langue Préférée:",
       ownerLabel: "Nom du Propriétaire:",
+      phoneLabel: "Téléphone / WhatsApp de l'entreprise (avec indicatif pays) :",
+      emailLabel: "Email de l'entreprise (privé) :",
+      websiteLabel: "Site web ou lien de réseau social (optionnel) :",
+      privacyNote: "Le nom, le secteur, la ville, le téléphone et le site web de votre entreprise apparaîtront dans notre annuaire public pour que Rachel aide les clients à vous trouver. Votre nom, votre email et vos commentaires restent privés.",
       businessLabel: "Nom de l'Entreprise:",
       cityLabel: "Ville:",
       industryLabel: "Industrie:",
@@ -406,6 +434,10 @@
     ht: {
       langLabel: "Lang Preferans:",
       ownerLabel: "Non Pwopriyetè:",
+      phoneLabel: "Telefòn / WhatsApp biznis la (ak kòd peyi a):",
+      emailLabel: "Imel biznis la (prive):",
+      websiteLabel: "Sit wèb oswa lyen rezo sosyal (opsyonèl):",
+      privacyNote: "Non biznis ou, endistri a, vil la, telefòn ak sit wèb ou ap parèt nan anyè piblik nou an pou Rachel ka ede kliyan jwenn ou. Non ou, imel ou ak kòmantè ou rete prive.",
       businessLabel: "Non Biznis:",
       cityLabel: "Vil:",
       industryLabel: "Endistri:",
@@ -493,11 +525,18 @@
     const hasWhatsapp = document.getElementById('hasWhatsapp').value;
     const willingWhatsapp = document.getElementById('willingWhatsapp') ? document.getElementById('willingWhatsapp').value : 'N/A';
     const comments = document.getElementById('comments').value;
+    const bizPhone = document.getElementById('bizPhone').value.trim();
+    const bizEmail = document.getElementById('bizEmail').value.trim();
+    let bizWebsite = document.getElementById('bizWebsite').value.trim();
+    if (bizWebsite && !/^https?:\/\//i.test(bizWebsite)) bizWebsite = 'https://' + bizWebsite;
 
     // Build WhatsApp Message
     let message = `*New Business Directory Submission*\n\n`;
     message += `*Name of Owner:* ${ownerName}\n`;
     message += `*Business Name:* ${businessName}\n`;
+    message += `*Phone / WhatsApp:* ${bizPhone}\n`;
+    message += `*Email:* ${bizEmail || 'Not provided'}\n`;
+    message += `*Website / Social:* ${bizWebsite || 'Not provided'}\n`;
     message += `*City:* ${city}\n`;
     message += `*Industry:* ${industry} ${otherText ? '(' + otherText + ')' : ''}\n`;
     message += `*Years in Business:* ${years}\n`;
@@ -526,6 +565,9 @@
         hasWhatsapp: hasWhatsapp,
         willingToGetWhatsapp: hasWhatsapp === 'No' ? willingWhatsapp : '',
         comments: comments.trim(),
+        phone: bizPhone,
+        email: bizEmail,
+        website: bizWebsite,
         source: 'mache-haitien-global-web'
       }, lang);
     }
@@ -546,10 +588,306 @@
   };
 </script>
 
-<!-- Firebase: saves every directory submission permanently in Firestore -->
+<!-- Firebase: private submission record + public directory listing (searchable by Rachel) -->
+<!-- ===================== RACHEL: directory assistant with voice ===================== -->
+<style>
+  #mr-launch{position:fixed;right:16px;bottom:16px;z-index:9998;display:flex;align-items:center;gap:8px;background:#074f94;color:#fff;border:0;border-radius:999px;padding:12px 18px 12px 12px;font:700 15px/1 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;box-shadow:0 10px 26px rgba(7,79,148,.45);cursor:pointer}
+  #mr-launch .mr-face,#mr-panel .mr-face{width:34px;height:34px;border-radius:50%;background:linear-gradient(135deg,#15ace8,#74b2ed);display:grid;place-items:center;font-weight:800;color:#fff;flex:none}
+  #mr-launch:focus-visible,#mr-panel button:focus-visible,#mr-panel select:focus-visible,#mr-panel input:focus-visible,#mr-panel a:focus-visible{outline:3px solid #ffd447;outline-offset:2px}
+  #mr-panel{position:fixed;right:16px;bottom:16px;z-index:9999;width:min(390px,calc(100vw - 32px));height:min(600px,calc(100vh - 32px));display:flex;flex-direction:column;background:#fff;border-radius:18px;box-shadow:0 24px 60px rgba(0,0,0,.35);overflow:hidden;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif}
+  #mr-panel[hidden],#mr-launch[hidden]{display:none}
+  .mr-top{display:flex;align-items:center;gap:10px;padding:12px 14px;background:linear-gradient(135deg,#074f94,#15ace8);color:#fff}
+  .mr-top b{display:block;font-size:16px}.mr-top small{font-size:12px;opacity:.9}
+  .mr-top .mr-x{margin-left:auto;background:rgba(255,255,255,.18);border:0;color:#fff;width:34px;height:34px;border-radius:50%;font-size:20px;cursor:pointer}
+  .mr-bar{display:flex;gap:8px;align-items:center;justify-content:space-between;padding:8px 12px;border-bottom:1px solid #e3edf5;background:#f6fbff}
+  #mr-voice{display:inline-flex;align-items:center;gap:6px;border:1.5px solid #074f94;background:#074f94;color:#fff;border-radius:999px;padding:6px 12px;font:700 13px/1 inherit;cursor:pointer}
+  #mr-voice[aria-pressed="false"]{background:#fff;color:#074f94}
+  #mr-lang{height:32px;border:1.5px solid #cfe0ee;border-radius:8px;padding:0 6px;font-size:13px;background:#fff;width:auto}
+  #mr-log{flex:1;overflow-y:auto;padding:14px 12px;background:#fbfdff}
+  .mr-msg{max-width:88%;margin:0 0 10px;padding:10px 12px;border-radius:14px;font-size:14.5px;line-height:1.45;word-wrap:break-word}
+  .mr-bot{background:#eaf4fd;color:#16324a;border-top-left-radius:4px}
+  .mr-me{background:#074f94;color:#fff;margin-left:auto;border-top-right-radius:4px}
+  .mr-listen{display:inline-block;margin-top:6px;border:0;background:none;color:#074f94;font-weight:700;font-size:12.5px;cursor:pointer;padding:0}
+  .mr-card{background:#fff;border:1px solid #d6e6f3;border-radius:12px;padding:10px 12px;margin:8px 0 0}
+  .mr-card b{color:#074f94;font-size:15px}.mr-card .mr-meta{font-size:12.5px;color:#4a5b6a;margin:3px 0 6px}
+  .mr-card a{display:inline-block;margin:4px 8px 0 0;font-size:13px;font-weight:700;color:#074f94}
+  .mr-chips{display:flex;flex-wrap:wrap;gap:6px;padding:8px 12px 0;background:#fff}
+  .mr-chips button{border:1.5px solid #cfe0ee;background:#fff;color:#074f94;border-radius:999px;padding:6px 10px;font-size:12.5px;font-weight:700;cursor:pointer}
+  #mr-form{display:flex;gap:8px;padding:10px 12px 12px;background:#fff}
+  #mr-input{flex:1;height:42px;border:1.5px solid #cfe0ee;border-radius:10px;padding:0 12px;font-size:15px;background:#fff}
+  #mr-send{height:42px;border:0;border-radius:10px;background:#074f94;color:#fff;font-weight:800;padding:0 14px;cursor:pointer}
+  .mr-foot{font-size:10.5px;color:#6b7c8a;text-align:center;padding:0 10px 8px;background:#fff}
+  @media (prefers-reduced-motion:no-preference){#mr-panel{animation:mrIn .18s ease-out}@keyframes mrIn{from{transform:translateY(12px);opacity:0}to{transform:none;opacity:1}}}
+</style>
+
+<button type="button" id="mr-launch" aria-controls="mr-panel" aria-expanded="false"><span class="mr-face" aria-hidden="true">R</span><span id="mr-launch-txt">Ask Rachel</span></button>
+
+<section id="mr-panel" role="dialog" aria-modal="false" aria-labelledby="mr-title" hidden>
+  <div class="mr-top"><span class="mr-face" aria-hidden="true">R</span><div><b id="mr-title">Rachel</b><small id="mr-sub">Mache Haitien Global assistant</small></div><button type="button" class="mr-x" id="mr-close" aria-label="Close">×</button></div>
+  <div class="mr-bar">
+    <button type="button" id="mr-voice" aria-pressed="true">🔊 Voice on</button>
+    <label style="font-size:12.5px;color:#41566a;display:flex;gap:6px;align-items:center"><span id="mr-lang-lbl">Language</span>
+      <select id="mr-lang" aria-label="Rachel's language"><option value="en">English</option><option value="fr">Français</option><option value="ht">Kreyòl</option></select>
+    </label>
+  </div>
+  <div id="mr-log" aria-live="polite"></div>
+  <div class="mr-chips" id="mr-chips"></div>
+  <form id="mr-form" autocomplete="off"><label for="mr-input" class="hidden">Message</label><input id="mr-input" maxlength="200" placeholder="Ask Rachel…"><button id="mr-send" type="submit">Send</button></form>
+  <div class="mr-foot" id="mr-foot">Rachel searches businesses listed in the Mache Haitien Global directory.</div>
+</section>
+
+<script>
+(function () {
+  'use strict';
+  // ---------------- TEXT (English, French, Haitian Creole) ----------------
+  const T = {
+    en: { launch: 'Ask Rachel', sub: 'Mache Haitien Global assistant', voiceOn: '🔊 Voice on', voiceOff: '🔇 Voice off', lang: 'Language', listen: '🔊 Listen', ph: 'Ask Rachel… e.g. "doctor in Miami"', send: 'Send', close: 'Close',
+      foot: 'Rachel searches businesses listed in the Mache Haitien Global directory.',
+      hello: "Hi! I'm Rachel. I can help you find Haitian businesses in our directory. Tell me what you're looking for and where, for example: a doctor in Miami, or a restaurant in Port-au-Prince.",
+      chips: ['Find a doctor', 'Find a lawyer', 'Find a restaurant', 'Add my business'],
+      loading: 'Let me look in the directory…',
+      found: (n, what, where) => `I found ${n} ${n === 1 ? 'business' : 'businesses'}${what ? ' for ' + what : ''}${where ? ' in ' + where : ''}.`,
+      foundSpeak: (n, first) => `The first one is ${first}. Their contact details are on your screen.`,
+      none: (what, where) => `I couldn't find ${what ? 'a ' + what : 'a business'}${where ? ' in ' + where : ''} yet. New businesses join every day. Try another city or type of business, or tap "Add my business" if it's yours.`,
+      ask: 'What kind of business are you looking for, and in which city or country?',
+      add: "To add your business, fill in the form on this page and tap the submit button. Once it's saved, I can find it for customers right away.",
+      thanks: "You're welcome! Anything else I can find for you?",
+      err: "Sorry, I couldn't reach the directory right now. Please check your connection and try again.",
+      call: 'Call', wa: 'WhatsApp', web: 'Website', yrs: 'In business', more: (n) => `…and ${n} more. Add a city or a business type to narrow it down.`,
+      noVoice: "This phone or browser doesn't have a matching voice, so I'll answer in text. You can still read everything here." },
+    fr: { launch: 'Demandez à Rachel', sub: 'Assistante Mache Haitien Global', voiceOn: '🔊 Voix activée', voiceOff: '🔇 Voix coupée', lang: 'Langue', listen: '🔊 Écouter', ph: 'Demandez… ex. « médecin à Miami »', send: 'Envoyer', close: 'Fermer',
+      foot: "Rachel cherche les entreprises inscrites dans l'annuaire Mache Haitien Global.",
+      hello: "Bonjour ! Je suis Rachel. Je peux vous aider à trouver des entreprises haïtiennes dans notre annuaire. Dites-moi ce que vous cherchez et où, par exemple : un médecin à Miami, ou un restaurant à Port-au-Prince.",
+      chips: ['Trouver un médecin', 'Trouver un avocat', 'Trouver un restaurant', 'Ajouter mon entreprise'],
+      loading: "Je cherche dans l'annuaire…",
+      found: (n, what, where) => `J'ai trouvé ${n} ${n === 1 ? 'entreprise' : 'entreprises'}${what ? ' pour ' + what : ''}${where ? ' à ' + where : ''}.`,
+      foundSpeak: (n, first) => `La première est ${first}. Leurs coordonnées sont affichées à l'écran.`,
+      none: (what, where) => `Je n'ai pas encore trouvé ${what ? what : "d'entreprise"}${where ? ' à ' + where : ''}. De nouvelles entreprises s'inscrivent chaque jour. Essayez une autre ville ou un autre type d'entreprise, ou touchez « Ajouter mon entreprise ».`,
+      ask: "Quel type d'entreprise cherchez-vous, et dans quelle ville ou quel pays ?",
+      add: "Pour ajouter votre entreprise, remplissez le formulaire de cette page et touchez le bouton d'envoi. Une fois enregistrée, je peux la trouver pour les clients tout de suite.",
+      thanks: 'Avec plaisir ! Je peux chercher autre chose pour vous ?',
+      err: "Désolée, je n'arrive pas à joindre l'annuaire pour le moment. Vérifiez votre connexion et réessayez.",
+      call: 'Appeler', wa: 'WhatsApp', web: 'Site web', yrs: 'En activité', more: (n) => `…et ${n} de plus. Ajoutez une ville ou un type d'entreprise pour affiner.`,
+      noVoice: "Cet appareil n'a pas de voix française adaptée, je réponds donc par écrit." },
+    ht: { launch: 'Mande Rachel', sub: 'Asistan Mache Haitien Global', voiceOn: '🔊 Vwa limen', voiceOff: '🔇 Vwa fèmen', lang: 'Lang', listen: '🔊 Koute', ph: 'Mande Rachel… egz. "doktè Miami"', send: 'Voye', close: 'Fèmen',
+      foot: 'Rachel chèche biznis ki nan anyè Mache Haitien Global la.',
+      hello: 'Bonjou! Mwen se Rachel. Mwen ka ede w jwenn biznis ayisyen nan anyè nou an. Di m sa w ap chèche ak ki kote, pa egzanp: yon doktè Miami, oswa yon restoran Pòtoprens.',
+      chips: ['Jwenn yon doktè', 'Jwenn yon avoka', 'Jwenn yon restoran', 'Ajoute biznis mwen'],
+      loading: 'M ap chèche nan anyè a…',
+      found: (n, what, where) => `Mwen jwenn ${n} biznis${what ? ' pou ' + what : ''}${where ? ' nan ' + where : ''}.`,
+      foundSpeak: (n, first) => `Premye a se ${first}. Enfòmasyon pou kontakte yo sou ekran an.`,
+      none: (what, where) => `Mwen poko jwenn ${what ? what : 'biznis'}${where ? ' nan ' + where : ''}. Gen nouvo biznis k ap antre chak jou. Eseye yon lòt vil oswa yon lòt kalite biznis, oswa peze "Ajoute biznis mwen".`,
+      ask: 'Ki kalite biznis w ap chèche, e nan ki vil oswa ki peyi?',
+      add: 'Pou ajoute biznis ou, ranpli fòm ki sou paj sa a epi peze bouton pou voye a. Lè l anrejistre, m ka jwenn li pou kliyan touswit.',
+      thanks: 'Avèk plezi! Èske m ka chèche yon lòt bagay pou ou?',
+      err: 'Padon, m pa ka rive jwenn anyè a kounye a. Tcheke koneksyon w epi eseye ankò.',
+      call: 'Rele', wa: 'WhatsApp', web: 'Sit wèb', yrs: 'Nan biznis', more: (n) => `…ak ${n} lòt ankò. Ajoute yon vil oswa yon kalite biznis pou jwenn pi presi.`,
+      noVoice: 'Telefòn sa a pa gen vwa kreyòl, kidonk m ap reponn ou pa ekri. Ou ka li tout bagay la a.' }
+  };
+
+  // ---------------- SEARCH VOCABULARY ----------------
+  const norm = s => String(s || '').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/[^a-z0-9+ -]/g, ' ').replace(/\s+/g, ' ').trim();
+  const INDUSTRY = {
+    'Doctor': ['doctor', 'doctors', 'physician', 'medecin', 'medecins', 'docteur', 'dokte', 'dokte yo', 'clinic', 'clinique', 'klinik'],
+    'Lawyer': ['lawyer', 'lawyers', 'attorney', 'attorneys', 'avocat', 'avocats', 'avoka'],
+    'Dentist': ['dentist', 'dentiste', 'dantis'],
+    'Chiropractic': ['chiropractic', 'chiropractor', 'chiropracteur', 'chiro', 'kiwopratik'],
+    'Orthodontist': ['orthodontist', 'orthodontiste', 'otodontis', 'braces'],
+    'Orthopedic': ['orthopedic', 'orthopedique', 'orthopediste', 'otopedi'],
+    'Dermatologist': ['dermatologist', 'dermatologue', 'dermatolog', 'skin doctor'],
+    'Pediatrist': ['pediatrist', 'pediatrician', 'pediatre', 'pedyat', 'children doctor'],
+    'Psychiatrist': ['psychiatrist', 'psychiatre', 'sikyat'],
+    'Veterinary': ['veterinary', 'vet', 'veterinarian', 'veterinaire', 'veterine', 'animal doctor'],
+    'Accident Attorney': ['accident attorney', 'accident lawyer', 'avocat accident', 'avoka aksidan', 'aksidan'],
+    'Immigration Attorney': ['immigration', 'imigrasyon', 'avoka imigrasyon'],
+    'Real Estate Attorney': ['real estate attorney', 'real estate lawyer', 'avocat immobilier'],
+    'Plumber': ['plumber', 'plumbing', 'plombier', 'plonbye'],
+    'Electrician': ['electrician', 'electricien', 'elektrisyen'],
+    'HVAC': ['hvac', 'air conditioning', 'ac repair', 'climatisation', 'ekondisyone'],
+    'Cleaner': ['cleaner', 'cleaning', 'nettoyage', 'menage', 'netwayaj'],
+    'Handyman': ['handyman', 'bricoleur', 'reparation'],
+    'Accountant': ['accountant', 'accounting', 'comptable', 'kontab'],
+    'Tax Prepare': ['tax', 'taxes', 'impot', 'impots', 'taks'],
+    'Real Estate': ['real estate', 'realtor', 'immobilier', 'agent immobilier', 'imobilye', 'house', 'kay'],
+    'Mortgage': ['mortgage', 'hypotheque', 'ipotek', 'pre hypothecaire'],
+    'Solar': ['solar', 'solaire', 'sole', 'panno sole'],
+    'Restaurant': ['restaurant', 'restaurants', 'food', 'resto', 'restoran', 'manje', 'manger'],
+    'Remedy': ['remedy', 'remedies', 'remede', 'remed', 'herbal', 'fey'],
+    'Catering': ['catering', 'traiteur', 'katerin'],
+    'E-commerce': ['e-commerce', 'ecommerce', 'online store', 'boutique en ligne'],
+    'MLM': ['mlm', 'network marketing']
+  };
+  const INDUSTRY_LABEL = {
+    fr: { 'Doctor': 'un médecin', 'Lawyer': 'un avocat', 'Dentist': 'un dentiste', 'Restaurant': 'un restaurant', 'Plumber': 'un plombier', 'Electrician': 'un électricien', 'Accountant': 'un comptable', 'Real Estate': 'un agent immobilier' },
+    ht: { 'Doctor': 'yon doktè', 'Lawyer': 'yon avoka', 'Dentist': 'yon dantis', 'Restaurant': 'yon restoran', 'Plumber': 'yon plonbye', 'Electrician': 'yon elektrisyen', 'Accountant': 'yon kontab', 'Real Estate': 'yon ajan imobilye' }
+  };
+  const COUNTRY = {
+    'Haiti': ['haiti', 'ayiti', 'haïti'], 'United States': ['usa', 'united states', 'us', 'america', 'etats unis', 'etazini', 'ameriken'],
+    'France': ['france', 'frans'], 'Canada': ['canada', 'kanada'], 'Brazil': ['brazil', 'bresil', 'brezil'],
+    'Dominican Republic': ['dominican', 'dominicaine', 'dominikani', 'republique dominicaine', 'santo domingo'], 'Puerto Rico': ['puerto rico', 'porto rico', 'pouto riko']
+  };
+  const CITY_ALIASES = { 'port-au-prince': ['port au prince', 'potoprens', 'pap'], 'cap-haitien': ['cap haitien', 'okap', 'au cap', 'cap'], 'new york': ['nyc', 'new york', 'nouyok'], 'miami': ['miami', 'mayami'] };
+  const US_STATES = {};
+  document.querySelectorAll('#usState option').forEach(o => { if (o.value) US_STATES[o.value] = norm(o.textContent); });
+
+  // ---------------- ELEMENTS / STATE ----------------
+  const $ = id => document.getElementById(id);
+  const panel = $('mr-panel'), launch = $('mr-launch'), log = $('mr-log'), input = $('mr-input'), voiceBtn = $('mr-voice'), langSel = $('mr-lang');
+  let LANG = (document.getElementById('languageSelect') || {}).value || 'en';
+  let greeted = false;
+  const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+
+  // ---------------- VOICE (browser speech: no API key, no cost) ----------------
+  const synth = window.speechSynthesis;
+  const canSpeak = !!(synth && window.SpeechSynthesisUtterance);
+  let voiceOn = true;
+  try { if (localStorage.getItem('mhg_rachel_voice') === 'off') voiceOn = false; } catch (e) {}
+  const VOICE_LOCALES = { en: ['en-US', 'en-GB', 'en-CA', 'en-AU', 'en'], fr: ['fr-FR', 'fr-CA', 'fr-BE', 'fr-CH', 'fr'], ht: ['ht-HT', 'ht'] };
+  const FEMALE = /(samantha|victoria|karen|moira|tessa|fiona|allison|ava|susan|zira|jenny|aria|michelle|emma|libby|sonia|natasha|serena|kathy|nicky|joanna|salli|kimberly|google us english|google uk english female|female|amelie|audrey|aurelie|marie|julie|denise|hortense|sylvie|chantal|celine|eloise|vivienne|brigitte|lea|google francais|google français)/i;
+  const MALE = /(\bmale\b|daniel|alex\b|fred|thomas|guy|david|mark|george|paul|henri|jean|claude|nicolas|rishi|aaron|arthur|gordon|reed|eddy|rocko|grandpa|ralph|bruce|junior|albert)/i;
+  let noVoiceShown = {};
+  function pickVoice(lang) {
+    if (!canSpeak) return null;
+    const voices = synth.getVoices();
+    for (const loc of VOICE_LOCALES[lang] || VOICE_LOCALES.en) {
+      const cands = voices.filter(v => (v.lang || '').replace('_', '-').toLowerCase().startsWith(loc.toLowerCase()) && !MALE.test(v.name.replace(/female/i, '')));
+      const fem = cands.filter(v => FEMALE.test(v.name) || lang === 'ht');
+      if (fem.length) return fem.sort((a, b) => (/(natural|premium|enhanced|google)/i.test(b.name) ? 1 : 0) - (/(natural|premium|enhanced|google)/i.test(a.name) ? 1 : 0))[0];
+    }
+    return null;
+  }
+  if (canSpeak && synth.addEventListener) synth.addEventListener('voiceschanged', () => {});
+  function speak(text) {
+    if (!voiceOn || !canSpeak || !text) return;
+    const v = pickVoice(LANG);
+    if (!v) { if (!noVoiceShown[LANG]) { noVoiceShown[LANG] = true; addBot(T[LANG].noVoice, false); } return; }
+    try {
+      synth.cancel();
+      const u = new SpeechSynthesisUtterance(text);
+      u.voice = v; u.lang = v.lang; u.rate = 1; u.pitch = 1;
+      synth.speak(u);
+    } catch (e) { console.warn('Rachel voice error', e); }
+  }
+  function setVoice(on) {
+    voiceOn = on;
+    try { localStorage.setItem('mhg_rachel_voice', on ? 'on' : 'off'); } catch (e) {}
+    voiceBtn.setAttribute('aria-pressed', on ? 'true' : 'false');
+    voiceBtn.textContent = on ? T[LANG].voiceOn : T[LANG].voiceOff;
+    if (!on && canSpeak) synth.cancel();
+  }
+  voiceBtn.addEventListener('click', () => setVoice(!voiceOn));
+
+  // ---------------- UI ----------------
+  function addMe(text) { const d = document.createElement('div'); d.className = 'mr-msg mr-me'; d.textContent = text; log.appendChild(d); log.scrollTop = log.scrollHeight; }
+  function addBot(html, speakText) {
+    const d = document.createElement('div'); d.className = 'mr-msg mr-bot'; d.innerHTML = html;
+    if (speakText && canSpeak) { const b = document.createElement('button'); b.type = 'button'; b.className = 'mr-listen'; b.textContent = T[LANG].listen; b.addEventListener('click', () => { const was = voiceOn; voiceOn = true; speak(speakText); voiceOn = was; }); d.appendChild(document.createElement('br')); d.appendChild(b); }
+    log.appendChild(d); log.scrollTop = log.scrollHeight; return d;
+  }
+  function renderChips() {
+    const c = $('mr-chips'); c.innerHTML = '';
+    T[LANG].chips.forEach((label, i) => { const b = document.createElement('button'); b.type = 'button'; b.textContent = label; b.addEventListener('click', () => { if (i === 3) { handle('__add__', label); } else handle(label, label); }); c.appendChild(b); });
+  }
+  function applyLang() {
+    const t = T[LANG];
+    $('mr-launch-txt').textContent = t.launch; $('mr-sub').textContent = t.sub; $('mr-lang-lbl').textContent = t.lang;
+    input.placeholder = t.ph; $('mr-send').textContent = t.send; $('mr-close').setAttribute('aria-label', t.close); $('mr-foot').textContent = t.foot;
+    langSel.value = LANG; setVoice(voiceOn); renderChips();
+  }
+  function setLang(l, fromRachel) {
+    if (!T[l]) return; LANG = l; applyLang();
+    if (fromRachel) { const page = document.getElementById('languageSelect'); if (page && page.value !== l) { page.value = l; if (typeof window.changeLanguage === 'function') window.changeLanguage(); } }
+  }
+  langSel.addEventListener('change', () => setLang(langSel.value, true));
+  const pageLang = document.getElementById('languageSelect');
+  if (pageLang) pageLang.addEventListener('change', () => setLang(pageLang.value, false));
+
+  function open() {
+    panel.hidden = false; launch.hidden = true; launch.setAttribute('aria-expanded', 'true');
+    if (!greeted) { greeted = true; addBot(esc(T[LANG].hello), T[LANG].hello); speak(T[LANG].hello); }
+    setTimeout(() => input.focus(), 50);
+  }
+  function close() { panel.hidden = true; launch.hidden = false; launch.setAttribute('aria-expanded', 'false'); if (canSpeak) synth.cancel(); launch.focus(); }
+  launch.addEventListener('click', open);
+  $('mr-close').addEventListener('click', close);
+  document.addEventListener('keydown', e => { if (e.key === 'Escape' && !panel.hidden) close(); });
+
+  // ---------------- UNDERSTANDING ----------------
+  function detectIndustry(q) {
+    let best = null, bestLen = 0;
+    for (const [ind, words] of Object.entries(INDUSTRY)) for (const w of words) { const nw = norm(w); if ((' ' + q + ' ').includes(' ' + nw + ' ') && nw.length > bestLen) { best = ind; bestLen = nw.length; } }
+    return best;
+  }
+  function detectPlace(q, listings) {
+    const padded = ' ' + q + ' ';
+    for (const [country, words] of Object.entries(COUNTRY)) for (const w of words) if (padded.includes(' ' + norm(w) + ' ')) return { type: 'country', value: country, label: country };
+    for (const [code, name] of Object.entries(US_STATES)) if (padded.includes(' ' + name + ' ')) return { type: 'state', value: code, label: name.replace(/\b\w/g, c => c.toUpperCase()) };
+    for (const [city, words] of Object.entries(CITY_ALIASES)) for (const w of words) if (padded.includes(' ' + norm(w) + ' ')) return { type: 'city', value: norm(city), label: city.replace(/\b\w/g, c => c.toUpperCase()) };
+    const cities = [...new Set(listings.map(l => norm(l.city)).filter(Boolean))].sort((a, b) => b.length - a.length);
+    for (const c of cities) if (padded.includes(' ' + c + ' ')) return { type: 'city', value: c, label: c.replace(/\b\w/g, x => x.toUpperCase()) };
+    return null;
+  }
+  const cityMatches = (l, v) => { const c = norm(l.city).replace(/-/g, ' '); const vv = v.replace(/-/g, ' '); return c === vv || c.includes(vv) || vv.includes(c); };
+  function matchPlace(l, p) {
+    if (!p) return true;
+    if (p.type === 'country') return l.country === p.value;
+    if (p.type === 'state') return l.usState === p.value;
+    return cityMatches(l, p.value);
+  }
+  function card(l) {
+    const t = T[LANG]; const digits = String(l.phone || '').replace(/[^\d+]/g, ''); const wa = digits.replace(/^\+/, '');
+    const where = [l.city, l.usState, l.country].filter(Boolean).join(', ');
+    const ind = l.industry === 'Other' && l.industryOther ? l.industryOther : l.industry;
+    let html = `<div class="mr-card"><b>${esc(l.businessName)}</b><div class="mr-meta">${esc(ind)} · ${esc(where)}${l.yearsInBusiness ? ' · ' + esc(t.yrs) + ': ' + esc(l.yearsInBusiness) : ''}</div>`;
+    if (digits) html += `<a href="tel:${esc(digits)}">📞 ${esc(t.call)} ${esc(l.phone)}</a><a href="https://wa.me/${esc(wa)}" target="_blank" rel="noopener">💬 ${esc(t.wa)}</a>`;
+    if (/^https?:\/\//i.test(l.website || '')) html += `<a href="${esc(l.website)}" target="_blank" rel="noopener nofollow">🌐 ${esc(t.web)}</a>`;
+    return html + '</div>';
+  }
+
+  async function handle(raw, shown) {
+    const t = T[LANG];
+    addMe(shown || raw);
+    if (raw === '__add__' || /\b(add|ajout|ajoute|inscri|enregistr|register|sign up|list my)\b/i.test(norm(raw))) {
+      addBot(esc(t.add), t.add); speak(t.add);
+      const f = document.getElementById('businessForm'); if (f) f.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      return;
+    }
+    const q = norm(raw);
+    if (/^(thanks|thank you|merci|mesi|ok|okay|dako)\b/.test(q)) { addBot(esc(t.thanks), t.thanks); speak(t.thanks); return; }
+    if (!window.fetchBusinessListings) { addBot(esc(t.err), t.err); speak(t.err); return; }
+    const wait = addBot(esc(t.loading), null);
+    let listings;
+    try { listings = await window.fetchBusinessListings(); } catch (e) { console.error(e); wait.remove(); addBot(esc(t.err), t.err); speak(t.err); return; }
+    wait.remove();
+    const ind = detectIndustry(q);
+    const place = detectPlace(q, listings);
+    let results;
+    if (ind || place) {
+      results = listings.filter(l => (!ind || l.industry === ind || (ind === 'Lawyer' && /Attorney/.test(l.industry))) && matchPlace(l, place));
+    } else {
+      const words = q.split(' ').filter(w => w.length > 2);
+      if (!words.length) { addBot(esc(t.ask), t.ask); speak(t.ask); return; }
+      results = listings.filter(l => { const hay = norm([l.businessName, l.industry, l.industryOther, l.city, l.country].join(' ')); return words.some(w => hay.includes(w)); });
+    }
+    const whatLabel = ind ? ((INDUSTRY_LABEL[LANG] || {})[ind] || ind.toLowerCase()) : '';
+    const whereLabel = place ? place.label : '';
+    if (!results.length) { const msg = t.none(whatLabel, whereLabel); addBot(esc(msg), msg); speak(msg); return; }
+    const head = t.found(results.length, LANG === 'en' ? whatLabel : '', whereLabel);
+    const spoken = head + ' ' + t.foundSpeak(results.length, results[0].businessName);
+    let html = esc(head) + results.slice(0, 5).map(card).join('');
+    if (results.length > 5) html += `<div style="margin-top:6px">${esc(t.more(results.length - 5))}</div>`;
+    addBot(html, spoken); speak(spoken);
+  }
+
+  $('mr-form').addEventListener('submit', e => { e.preventDefault(); const v = input.value.trim(); if (!v) return; input.value = ''; handle(v); });
+  applyLang();
+})();
+</script>
+<!-- =================== END RACHEL =================== -->
+
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-  import { getFirestore, collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+  import { getFirestore, collection, doc, writeBatch, getDocs, query, orderBy, limit, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
   const firebaseConfig = {
     apiKey: "AIzaSyBmVnWxX3rMOxh1LebUw2Up9nxm5C7HG8g",
@@ -562,18 +900,49 @@
 
   const app = initializeApp(firebaseConfig);
   const db = getFirestore(app);
+  let listingsCache = null, cacheAt = 0;
 
+  // Saves the full (private) submission and the public directory listing together.
   window.saveBusinessSubmission = async function (data, lang) {
     const status = document.getElementById('saveStatus');
     const t = (typeof translations !== 'undefined' && translations[lang]) || {};
     try {
-      await addDoc(collection(db, 'business_submissions'), { ...data, createdAt: serverTimestamp() });
+      const subRef = doc(collection(db, 'business_submissions'));
+      const listRef = doc(db, 'business_listings', subRef.id);
+      const batch = writeBatch(db);
+      batch.set(subRef, { ...data, createdAt: serverTimestamp() });
+      batch.set(listRef, {
+        businessName: data.businessName,
+        industry: data.industry,
+        industryOther: data.industryOther || '',
+        city: data.city,
+        country: data.country,
+        usState: data.usState || '',
+        yearsInBusiness: data.yearsInBusiness,
+        phone: data.phone,
+        website: data.website || '',
+        language: data.language || 'en',
+        createdAt: serverTimestamp()
+      });
+      await batch.commit();
+      listingsCache = null; // so Rachel finds the new business right away
       if (status) { status.className = 'save-status ok'; status.textContent = t.savedMsg || 'Saved!'; }
-      document.getElementById('businessForm').reset();
+      const form = document.getElementById('businessForm');
+      form.reset();
+      ['industry', 'country', 'hasSocial', 'hasWhatsapp'].forEach(id => { const el = document.getElementById(id); if (el) el.dispatchEvent(new Event('change')); });
     } catch (err) {
       console.error('Firestore save failed:', err);
       if (status) { status.className = 'save-status err'; status.textContent = t.saveErrMsg || 'Could not save.'; }
     }
+  };
+
+  // Public directory listings for Rachel's search (newest first, cached for 60 seconds).
+  window.fetchBusinessListings = async function () {
+    if (listingsCache && Date.now() - cacheAt < 60000) return listingsCache;
+    const snap = await getDocs(query(collection(db, 'business_listings'), orderBy('createdAt', 'desc'), limit(500)));
+    listingsCache = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+    cacheAt = Date.now();
+    return listingsCache;
   };
 </script>
 
