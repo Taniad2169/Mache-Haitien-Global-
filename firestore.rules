@@ -6,6 +6,8 @@ service cloud.firestore {
     // Mache Haitien Global directory sign-ups.
     // The public form may only ADD a new submission. Nobody can read, edit or
     // delete submissions from the website; view them in the Firebase console.
+    // A submission is saved either together with its paid listing (test card /
+    // Stripe) or alone as "payment pending" right before going to Stripe.
     match /business_submissions/{submissionId} {
       allow create: if isValidSubmission(request.resource.data);
       allow read, update, delete: if false;
@@ -18,6 +20,8 @@ service cloud.firestore {
     match /business_listings/{listingId} {
       allow get: if true;
       allow list: if request.query.limit <= 500;
+      // A listing goes public only with an approved payment ("test_paid" while
+      // testing, "paid" from Stripe) and only for a submission that exists.
       allow create: if isValidListing(request.resource.data)
           && existsAfter(/databases/$(database)/documents/business_submissions/$(listingId));
       allow update, delete: if false;
@@ -46,14 +50,32 @@ service cloud.firestore {
           && (v == '' || v.matches('^https?://.+$'));
     }
 
+    // Payment record: status and the last 4 digits only. Card numbers,
+    // expiration dates, CVC and ZIP are never stored.
+    function validPayment(p, allowPending) {
+      return p is map
+          && p.keys().hasOnly(['status', 'method', 'last4', 'ref', 'testMode'])
+          && p.status in (allowPending ? ['pending', 'test_paid', 'paid'] : ['test_paid', 'paid'])
+          && (!('method' in p) || str(p.method, 20))
+          && (!('last4' in p) || (p.last4 is string && p.last4.matches('^[0-9]{4}$')))
+          && (!('ref' in p) || str(p.ref, 200))
+          && (!('testMode' in p) || p.testMode is bool);
+    }
+
     function isValidListing(d) {
       return d.keys().hasOnly([
                'businessName', 'industry', 'industryOther', 'city', 'country',
-               'usState', 'yearsInBusiness', 'phone', 'website', 'language',
+               'usState', 'region', 'yearsInBusiness', 'phone', 'website',
+               'description', 'language', 'source', 'status', 'payment',
                'createdAt'
              ])
           && d.keys().hasAll(['businessName', 'industry', 'city', 'country',
-                              'phone', 'createdAt'])
+                              'phone', 'status', 'payment', 'createdAt'])
+          && d.status == 'published'
+          && validPayment(d.payment, false)
+          && (!('region' in d) || str(d.region, 60))
+          && (!('description' in d) || str(d.description, 2400))
+          && (!('source' in d) || str(d.source, 40))
           && str(d.businessName, 160) && d.businessName.size() > 0
           && str(d.industry, 60) && d.industry.size() > 0
           && str(d.city, 120) && d.city.size() > 0
@@ -73,7 +95,8 @@ service cloud.firestore {
                'industryOther', 'yearsInBusiness', 'country', 'usState',
                'hasSocialMedia', 'socialMedia', 'advertising', 'hasWhatsapp',
                'willingToGetWhatsapp', 'comments', 'createdAt', 'source',
-               'phone', 'email', 'website'
+               'phone', 'email', 'website', 'region', 'address', 'description',
+               'payment'
              ])
           && d.keys().hasAll(['ownerName', 'businessName', 'city', 'industry',
                               'yearsInBusiness', 'country', 'phone', 'createdAt'])
@@ -96,6 +119,10 @@ service cloud.firestore {
           && (!('willingToGetWhatsapp' in d) || str(d.willingToGetWhatsapp, 3))
           && (!('comments' in d) || str(d.comments, 2400))
           && (!('source' in d) || str(d.source, 40))
+          && (!('region' in d) || str(d.region, 60))
+          && (!('address' in d) || str(d.address, 200))
+          && (!('description' in d) || str(d.description, 2400))
+          && (!('payment' in d) || validPayment(d.payment, true))
           && d.createdAt == request.time;
     }
   }
