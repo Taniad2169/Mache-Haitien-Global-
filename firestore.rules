@@ -27,6 +27,15 @@ service cloud.firestore {
       allow update, delete: if false;
     }
 
+    // Up to 2 photos per listing (small JPEGs saved by the form). Created together
+    // with the listing; shown on the merchant's profile. Remove them in the console.
+    match /listing_photos/{listingId} {
+      allow get: if true;
+      allow create: if isValidPhotos(request.resource.data)
+          && existsAfter(/databases/$(database)/documents/business_listings/$(listingId));
+      allow list, update, delete: if false;
+    }
+
     // Everything else stays locked.
     match /{document=**} {
       allow read, write: if false;
@@ -62,12 +71,28 @@ service cloud.firestore {
           && (!('testMode' in p) || p.testMode is bool);
     }
 
+    function okPhoto(v) {
+      return v is string && v.size() <= 400000 && v.matches('^data:image/jpeg;base64,.*$');
+    }
+
+    function isValidPhotos(d) {
+      return d.keys().hasOnly(['photos', 'createdAt'])
+          && d.photos is list && d.photos.size() >= 1 && d.photos.size() <= 2
+          && okPhoto(d.photos[0])
+          && (d.photos.size() < 2 || okPhoto(d.photos[1]))
+          && d.createdAt == request.time;
+    }
+
+    function validReviewUrl(v) {
+      return v is string && v.size() <= 300 && (v == '' || v.matches('^https?://.+$'));
+    }
+
     function isValidListing(d) {
       return d.keys().hasOnly([
                'businessName', 'industry', 'industryOther', 'city', 'country',
                'usState', 'region', 'yearsInBusiness', 'phone', 'website',
                'description', 'language', 'source', 'status', 'payment',
-               'createdAt'
+               'googleReviewUrl', 'photoCount', 'createdAt'
              ])
           && d.keys().hasAll(['businessName', 'industry', 'city', 'country',
                               'phone', 'status', 'payment', 'createdAt'])
@@ -76,6 +101,8 @@ service cloud.firestore {
           && (!('region' in d) || str(d.region, 60))
           && (!('description' in d) || str(d.description, 2400))
           && (!('source' in d) || str(d.source, 40))
+          && (!('googleReviewUrl' in d) || validReviewUrl(d.googleReviewUrl))
+          && (!('photoCount' in d) || (d.photoCount is int && d.photoCount >= 0 && d.photoCount <= 2))
           && str(d.businessName, 160) && d.businessName.size() > 0
           && str(d.industry, 60) && d.industry.size() > 0
           && str(d.city, 120) && d.city.size() > 0
@@ -96,7 +123,7 @@ service cloud.firestore {
                'hasSocialMedia', 'socialMedia', 'advertising', 'hasWhatsapp',
                'willingToGetWhatsapp', 'comments', 'createdAt', 'source',
                'phone', 'email', 'website', 'region', 'address', 'description',
-               'payment'
+               'payment', 'extraNotes', 'googleReviewUrl', 'photoCount'
              ])
           && d.keys().hasAll(['ownerName', 'businessName', 'city', 'industry',
                               'yearsInBusiness', 'country', 'phone', 'createdAt'])
@@ -123,6 +150,9 @@ service cloud.firestore {
           && (!('address' in d) || str(d.address, 200))
           && (!('description' in d) || str(d.description, 2400))
           && (!('payment' in d) || validPayment(d.payment, true))
+          && (!('extraNotes' in d) || str(d.extraNotes, 1800))
+          && (!('googleReviewUrl' in d) || validReviewUrl(d.googleReviewUrl))
+          && (!('photoCount' in d) || (d.photoCount is int && d.photoCount >= 0 && d.photoCount <= 2))
           && d.createdAt == request.time;
     }
   }

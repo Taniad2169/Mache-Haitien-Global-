@@ -294,6 +294,10 @@
         <option value="Catering">Catering</option>
         <option value="E-commerce">E-commerce</option>
         <option value="MLM">MLM</option>
+        <option value="Airbnb">Airbnb</option>
+        <option value="Driver">Driver</option>
+        <option value="Limousine">Limousine</option>
+        <option value="Taxi">Taxi</option>
         <option value="Other">Other</option>
       </select>
       <!-- Other Text Box -->
@@ -335,6 +339,9 @@
         <option value="Brazil">Brazil</option>
         <option value="Dominican Republic">Dominican Republic</option>
         <option value="Puerto Rico">Puerto Rico</option>
+        <option value="Martinique">Martinique</option>
+        <option value="Guadeloupe">Guadeloupe</option>
+        <option value="Saint Martin">Saint Martin</option>
       </select>
       
       <!-- US States Dropdown -->
@@ -402,6 +409,26 @@
       <textarea id="comments" maxlength="2400" rows="5" placeholder="..."></textarea>
     </div>
 
+    <!-- Anything else (250 words) -->
+    <div class="form-group">
+      <label data-key="extraLabel" for="extraNotes">Anything else you want us to know? (250 words max)</label>
+      <textarea id="extraNotes" maxlength="1800" rows="4" placeholder="..." oninput="mhgWordCap(this, 250)"></textarea>
+      <small class="word-count" id="extraCount">0 / 250</small>
+    </div>
+
+    <!-- Google review link -->
+    <div class="form-group">
+      <label data-key="reviewLabel" for="googleReview">Your Google review link (optional):</label>
+      <input type="url" id="googleReview" maxlength="300" placeholder="https://g.page/r/...">
+    </div>
+
+    <!-- Photos -->
+    <div class="form-group">
+      <label data-key="photosLabel" for="bizPhotos">Photos of you at work or of your products (up to 2, optional):</label>
+      <input type="file" id="bizPhotos" accept="image/*" multiple>
+      <div id="photoPreview" class="photo-preview" aria-live="polite"></div>
+    </div>
+
     <!-- Submit Button -->
     <p class="privacy-note" data-key="privacyNote">Your business name, industry, city, phone and website will appear in our public directory so Rachel can help customers find you. Your name, email and comments stay private.</p>
     <button type="submit" class="submit-btn" data-key="submitBtn">Submit and continue to payment</button>
@@ -432,6 +459,9 @@
       whatsappLabel: "Do you have WhatsApp?",
       whatsappWillingLabel: "Are you willing to get WhatsApp for communication?",
       commentLabel: "Comments (400 words max):",
+      extraLabel: "Anything else you want us to know? (250 words max)",
+      reviewLabel: "Your Google review link (optional):",
+      photosLabel: "Photos of you at work or of your products (up to 2, optional):",
       submitBtn: "Submit and continue to payment",
       savedMsg: "Saved! Thank you, your business was added to our directory list.",
       saveErrMsg: "We couldn't save your entry. Please message us on WhatsApp so we can add your business."
@@ -456,6 +486,9 @@
       whatsappLabel: "Avez-vous WhatsApp?",
       whatsappWillingLabel: "Êtes-vous prêt à obtenir WhatsApp pour la communication?",
       commentLabel: "Commentaires (400 mots max):",
+      extraLabel: "Autre chose que vous voulez nous dire ? (250 mots max)",
+      reviewLabel: "Votre lien d'avis Google (facultatif) :",
+      photosLabel: "Photos de vous au travail ou de vos produits (2 max, facultatif) :",
       submitBtn: "Soumettre et passer au paiement",
       savedMsg: "Enregistré ! Merci, votre entreprise a été ajoutée à notre liste.",
       saveErrMsg: "Nous n'avons pas pu enregistrer votre inscription. Écrivez-nous sur WhatsApp pour que nous ajoutions votre entreprise."
@@ -480,6 +513,9 @@
       whatsappLabel: "Èske w gen WhatsApp?",
       whatsappWillingLabel: "Èske w prè pou w jwenn WhatsApp pou kominikasyon?",
       commentLabel: "Kòmantè (400 mo max):",
+      extraLabel: "Èske gen lòt bagay ou vle nou konnen? (250 mo max)",
+      reviewLabel: "Lyen revizyon Google ou (si w genyen):",
+      photosLabel: "Foto w ap travay oswa foto pwodwi ou (2 maksimòm, si w vle):",
       submitBtn: "Soumèt epi kontinye pou peye",
       savedMsg: "Anrejistre! Mèsi, biznis ou ajoute nan lis nou an.",
       saveErrMsg: "Nou pa t ka anrejistre enfòmasyon ou. Tanpri ekri nou sou WhatsApp pou nou ka ajoute biznis ou."
@@ -504,6 +540,9 @@
       whatsappLabel: "¿Tiene WhatsApp?",
       whatsappWillingLabel: "¿Estaría dispuesto a usar WhatsApp para comunicarse?",
       commentLabel: "Comentarios (máx. 400 palabras):",
+      extraLabel: "¿Algo más que quiera que sepamos? (máx. 250 palabras)",
+      reviewLabel: "Su enlace de reseñas de Google (opcional):",
+      photosLabel: "Fotos suyas trabajando o de sus productos (máx. 2, opcional):",
       submitBtn: "Enviar y continuar al pago",
       savedMsg: "¡Guardado! Gracias, su negocio fue agregado a nuestro directorio.",
       saveErrMsg: "No pudimos guardar su información. Escríbanos por WhatsApp para agregar su negocio."
@@ -579,6 +618,9 @@
     const hasWhatsapp = document.getElementById('hasWhatsapp').value;
     const willingWhatsapp = document.getElementById('willingWhatsapp') ? document.getElementById('willingWhatsapp').value : 'N/A';
     const comments = document.getElementById('comments').value;
+    const extraNotes = document.getElementById('extraNotes').value.trim();
+    let googleReview = document.getElementById('googleReview').value.trim();
+    if (googleReview && !/^https?:\/\//i.test(googleReview)) googleReview = 'https://' + googleReview;
     const bizPhone = document.getElementById('bizPhone').value.trim();
     const bizEmail = document.getElementById('bizEmail').value.trim();
     let bizWebsite = document.getElementById('bizWebsite').value.trim();
@@ -599,6 +641,8 @@
     message += `*Advertising:* ${advertise || 'Not specified'}\n`;
     message += `*WhatsApp:* ${hasWhatsapp} ${hasWhatsapp === 'No' ? '(Willing to get: ' + willingWhatsapp + ')' : ''}\n`;
     message += `*Comments:* ${comments || 'None'}\n`;
+    if (extraNotes) message += `*Anything else:* ${extraNotes}\n`;
+    if (googleReview) message += `*Google reviews:* ${googleReview}\n`;
 
     const lang = document.getElementById('languageSelect').value;
     const data = {
@@ -620,6 +664,8 @@
       phone: bizPhone,
       email: bizEmail,
       website: bizWebsite,
+      extraNotes: extraNotes,
+      googleReviewUrl: googleReview,
       source: 'mache-haitien-global-web'
     };
 
@@ -710,7 +756,7 @@
       add: "To add your business, fill in the form on this page and tap the submit button. Once it's saved, I can find it for customers right away.",
       thanks: "You're welcome! Anything else I can find for you?",
       err: "Sorry, I couldn't reach the directory right now. Please check your connection and try again.",
-      call: 'Call', wa: 'WhatsApp', web: 'Website', yrs: 'In business', more: (n) => `…and ${n} more. Add a city or a business type to narrow it down.`,
+      call: 'Call', wa: 'WhatsApp', web: 'Website', rev: 'Google reviews', yrs: 'In business', more: (n) => `…and ${n} more. Add a city or a business type to narrow it down.`,
       noVoice: "This phone or browser doesn't have a matching voice, so I'll answer in text. You can still read everything here." },
     fr: { launch: 'Demandez à Rachel', sub: 'Assistante Mache Haitien Global', voiceOn: '🔊 Voix activée', voiceOff: '🔇 Voix coupée', lang: 'Langue', listen: '🔊 Écouter', ph: 'Demandez… ex. « médecin à Miami »', send: 'Envoyer', close: 'Fermer',
       foot: "Rachel cherche les entreprises inscrites dans l'annuaire Mache Haitien Global.",
@@ -724,7 +770,7 @@
       add: "Pour ajouter votre entreprise, remplissez le formulaire de cette page et touchez le bouton d'envoi. Une fois enregistrée, je peux la trouver pour les clients tout de suite.",
       thanks: 'Avec plaisir ! Je peux chercher autre chose pour vous ?',
       err: "Désolée, je n'arrive pas à joindre l'annuaire pour le moment. Vérifiez votre connexion et réessayez.",
-      call: 'Appeler', wa: 'WhatsApp', web: 'Site web', yrs: 'En activité', more: (n) => `…et ${n} de plus. Ajoutez une ville ou un type d'entreprise pour affiner.`,
+      call: 'Appeler', wa: 'WhatsApp', web: 'Site web', rev: 'Avis Google', yrs: 'En activité', more: (n) => `…et ${n} de plus. Ajoutez une ville ou un type d'entreprise pour affiner.`,
       noVoice: "Cet appareil n'a pas de voix française adaptée, je réponds donc par écrit." },
     ht: { launch: 'Mande Rachel', sub: 'Asistan Mache Haitien Global', voiceOn: '🔊 Vwa limen', voiceOff: '🔇 Vwa fèmen', lang: 'Lang', listen: '🔊 Koute', ph: 'Mande Rachel… egz. "doktè Miami"', send: 'Voye', close: 'Fèmen',
       foot: 'Rachel chèche biznis ki nan anyè Mache Haitien Global la.',
@@ -738,7 +784,7 @@
       add: 'Pou ajoute biznis ou, ranpli fòm ki sou paj sa a epi peze bouton pou voye a. Lè l anrejistre, m ka jwenn li pou kliyan touswit.',
       thanks: 'Avèk plezi! Èske m ka chèche yon lòt bagay pou ou?',
       err: 'Padon, m pa ka rive jwenn anyè a kounye a. Tcheke koneksyon w epi eseye ankò.',
-      call: 'Rele', wa: 'WhatsApp', web: 'Sit wèb', yrs: 'Nan biznis', more: (n) => `…ak ${n} lòt ankò. Ajoute yon vil oswa yon kalite biznis pou jwenn pi presi.`,
+      call: 'Rele', wa: 'WhatsApp', web: 'Sit wèb', rev: 'Revizyon Google', yrs: 'Nan biznis', more: (n) => `…ak ${n} lòt ankò. Ajoute yon vil oswa yon kalite biznis pou jwenn pi presi.`,
       noVoice: 'Telefòn sa a pa gen vwa kreyòl, kidonk m ap reponn ou pa ekri. Ou ka li tout bagay la a.' }
   };
 
@@ -772,7 +818,11 @@
     'Remedy': ['remedy', 'remedies', 'remede', 'remed', 'herbal', 'fey'],
     'Catering': ['catering', 'traiteur', 'katerin'],
     'E-commerce': ['e-commerce', 'ecommerce', 'online store', 'boutique en ligne'],
-    'MLM': ['mlm', 'network marketing']
+    'MLM': ['mlm', 'network marketing'],
+    'Airbnb': ['airbnb', 'short term rental', 'vacation rental', 'location courte', 'lokasyon', 'apartment rental'],
+    'Driver': ['driver', 'chauffeur', 'chofe', 'chofè', 'ride'],
+    'Limousine': ['limousine', 'limo', 'limouzin'],
+    'Taxi': ['taxi', 'taksi', 'cab']
   };
   const INDUSTRY_LABEL = {
     fr: { 'Doctor': 'un médecin', 'Lawyer': 'un avocat', 'Dentist': 'un dentiste', 'Restaurant': 'un restaurant', 'Plumber': 'un plombier', 'Electrician': 'un électricien', 'Accountant': 'un comptable', 'Real Estate': 'un agent immobilier' },
@@ -781,7 +831,9 @@
   const COUNTRY = {
     'Haiti': ['haiti', 'ayiti', 'haïti'], 'United States': ['usa', 'united states', 'us', 'america', 'etats unis', 'etazini', 'ameriken'],
     'France': ['france', 'frans'], 'Canada': ['canada', 'kanada'], 'Brazil': ['brazil', 'bresil', 'brezil'],
-    'Dominican Republic': ['dominican', 'dominicaine', 'dominikani', 'republique dominicaine', 'santo domingo'], 'Puerto Rico': ['puerto rico', 'porto rico', 'pouto riko']
+    'Dominican Republic': ['dominican', 'dominicaine', 'dominikani', 'republique dominicaine', 'santo domingo'], 'Puerto Rico': ['puerto rico', 'porto rico', 'pouto riko'],
+    'Martinique': ['martinique', 'matinik', 'martinica'], 'Guadeloupe': ['guadeloupe', 'gwadloup', 'guadalupe'],
+    'Saint Martin': ['saint martin', 'st martin', 'st. martin', 'sen maten', 'san martin', 'sint maarten']
   };
   const CITY_ALIASES = { 'port-au-prince': ['port au prince', 'potoprens', 'pap'], 'cap-haitien': ['cap haitien', 'okap', 'au cap', 'cap'], 'new york': ['nyc', 'new york', 'nouyok'], 'miami': ['miami', 'mayami'] };
   const US_STATES = {};
@@ -898,6 +950,8 @@
     let html = `<div class="mr-card"><b>${esc(l.businessName)}</b><div class="mr-meta">${esc(ind)} · ${esc(where)}${l.yearsInBusiness ? ' · ' + esc(t.yrs) + ': ' + esc(l.yearsInBusiness) : ''}</div>`;
     if (digits) html += `<a href="tel:${esc(digits)}">📞 ${esc(t.call)} ${esc(l.phone)}</a><a href="https://wa.me/${esc(wa)}" target="_blank" rel="noopener">💬 ${esc(t.wa)}</a>`;
     if (/^https?:\/\//i.test(l.website || '')) html += `<a href="${esc(l.website)}" target="_blank" rel="noopener nofollow">🌐 ${esc(t.web)}</a>`;
+    { const rv = /^https?:\/\//i.test(l.googleReviewUrl || '') ? l.googleReviewUrl : 'https://www.google.com/search?q=' + encodeURIComponent((l.businessName || '') + ' ' + (l.city || '') + ' reviews');
+      html += `<a href="${esc(rv)}" target="_blank" rel="noopener nofollow">⭐ ${esc(t.rev || 'Google reviews')}</a>`; }
     return html + '</div>';
   }
 
@@ -942,6 +996,69 @@
 </script>
 <!-- =================== END RACHEL =================== -->
 
+<!-- ===================== MHG PHOTOS + WORD LIMIT HELPERS ===================== -->
+<style>
+.photo-preview{display:flex;gap:10px;margin-top:8px;flex-wrap:wrap}
+.photo-preview figure{margin:0;position:relative;width:96px;height:96px;border-radius:10px;overflow:hidden;border:1px solid #c7d3e2;background:#f2f6fb}
+.photo-preview img{width:100%;height:100%;object-fit:cover;display:block}
+.photo-preview button{position:absolute;top:4px;right:4px;width:28px;height:28px;border-radius:50%;border:0;background:rgba(0,0,0,.65);color:#fff;font-weight:800;font-size:16px;line-height:1;cursor:pointer}
+.word-count{display:block;text-align:right;font-size:12px;color:#5f6f84;margin-top:4px}
+</style>
+<script>
+/* Keeps a text box under a word limit and updates its counter. */
+window.mhgWordCap = function (el, max) {
+  var w = el.value.trim().split(/\s+/).filter(Boolean);
+  if (w.length > max) el.value = w.slice(0, max).join(' ');
+  var c = document.getElementById(el.getAttribute('data-count') || (el.id === 'extraNotes' ? 'extraCount' : ''));
+  if (c) c.textContent = Math.min(w.length, max) + ' / ' + max;
+};
+/* Up to 2 photos, shrunk on the phone to small JPEGs (about 300 KB or less each) before saving. */
+window.MHGPhotos = (function () {
+  var list = [], previews = [];
+  function compress(file) {
+    return new Promise(function (res, rej) {
+      var img = new Image(), url = URL.createObjectURL(file);
+      img.onload = function () {
+        var max = 900, sc = Math.min(1, max / Math.max(img.width, img.height));
+        var c = document.createElement('canvas'); c.width = Math.round(img.width * sc); c.height = Math.round(img.height * sc);
+        var g = c.getContext('2d'); g.fillStyle = '#fff'; g.fillRect(0, 0, c.width, c.height); g.drawImage(img, 0, 0, c.width, c.height);
+        URL.revokeObjectURL(url);
+        var q = 0.8, d = c.toDataURL('image/jpeg', q);
+        while (d.length > 300000 && q > 0.35) { q -= 0.1; d = c.toDataURL('image/jpeg', q); }
+        res(d);
+      };
+      img.onerror = function () { URL.revokeObjectURL(url); rej(new Error('Could not read this picture')); };
+      img.src = url;
+    });
+  }
+  function drawAll() {
+    previews.forEach(function (pv) {
+      pv.innerHTML = '';
+      list.forEach(function (d, i) {
+        var f = document.createElement('figure');
+        f.innerHTML = '<img alt="Photo ' + (i + 1) + '"><button type="button" aria-label="Remove photo ' + (i + 1) + '">×</button>';
+        f.querySelector('img').src = d;
+        f.querySelector('button').onclick = function () { list.splice(i, 1); drawAll(); };
+        pv.appendChild(f);
+      });
+    });
+  }
+  function bind(inputId, previewId) {
+    var inp = document.getElementById(inputId), pv = document.getElementById(previewId);
+    if (!inp || !pv) return;
+    previews.push(pv);
+    inp.addEventListener('change', async function () {
+      var files = [].slice.call(inp.files || []);
+      for (var i = 0; i < files.length && list.length < 2; i++) { try { list.push(await compress(files[i])); } catch (e) { console.warn(e); } }
+      inp.value = ''; drawAll();
+    });
+  }
+  return { bind: bind, get: function () { return list.slice(0, 2); }, clear: function () { list = []; drawAll(); } };
+})();
+</script>
+<!-- =================== END MHG PHOTOS =================== -->
+
+<script>document.addEventListener("DOMContentLoaded",function(){window.MHGPhotos.bind("bizPhotos","photoPreview")});</script>
 <!-- ===================== MHG PAYMENT STEP (Stripe-ready) =====================
   After the vendor form is valid, this opens a payment window.
   TEST MODE (now): a practice card form. Nothing is charged, and the card number,
@@ -1157,6 +1274,8 @@ window.MHG_PAYMENT = {
       description: data.description || '',
       language: data.language || 'en',
       source: data.source || 'mache-haitien-global-web',
+      googleReviewUrl: data.googleReviewUrl || '',
+      photoCount: (data.photoCount || 0),
       status: 'published',
       payment: payment
     };
@@ -1169,6 +1288,7 @@ window.MHG_PAYMENT = {
   function resetForm() {
     const form = document.getElementById('businessForm');
     form.reset();
+    const ec = document.getElementById('extraCount'); if (ec) ec.textContent = '0 / 250';
     ['industry', 'country', 'hasSocial', 'hasWhatsapp'].forEach(id => { const el = document.getElementById(id); if (el) el.dispatchEvent(new Event('change')); });
   }
 
@@ -1177,17 +1297,21 @@ window.MHG_PAYMENT = {
   // the public listing is created when Stripe sends the customer back with ?mhg_paid=...
   window.saveBusinessSubmission = async function (data, lang, payment, pendingOnly) {
     try {
+      const photos = (window.MHGPhotos && window.MHGPhotos.get()) || [];
+      data = { ...data, photoCount: photos.length };
       const subRef = doc(collection(db, 'business_submissions'));
       if (pendingOnly) {
         await setDoc(subRef, { ...data, payment: payment, createdAt: serverTimestamp() });
-        try { localStorage.setItem('mhgPendingListing', JSON.stringify({ id: subRef.id, lang: lang, data: data })); } catch (e) {}
+        try { localStorage.setItem('mhgPendingListing', JSON.stringify({ id: subRef.id, lang: lang, data: data, photos: photos })); } catch (e) {}
         return subRef.id;
       }
       const listRef = doc(db, 'business_listings', subRef.id);
       const batch = writeBatch(db);
       batch.set(subRef, { ...data, payment: payment, createdAt: serverTimestamp() });
       batch.set(listRef, { ...listingFrom(data, payment), createdAt: serverTimestamp() });
+      if (photos.length) batch.set(doc(db, 'listing_photos', subRef.id), { photos: photos, createdAt: serverTimestamp() });
       await batch.commit();
+      if (window.MHGPhotos) window.MHGPhotos.clear();
       listingsCache = null; // so Rachel finds the new business right away
       showSaved(lang, true); resetForm();
       return subRef.id;
@@ -1207,7 +1331,10 @@ window.MHG_PAYMENT = {
     if (!pending) return;
     const payment = { status: 'paid', method: 'stripe', ref: String(session).slice(0, 200) };
     window.MHGPay.open({ lang: pending.lang, onPaid: async () => {
-      await setDoc(doc(db, 'business_listings', pending.id), { ...listingFrom(pending.data, payment), createdAt: serverTimestamp() });
+      const b = writeBatch(db);
+      b.set(doc(db, 'business_listings', pending.id), { ...listingFrom(pending.data, payment), createdAt: serverTimestamp() });
+      if (pending.photos && pending.photos.length) b.set(doc(db, 'listing_photos', pending.id), { photos: pending.photos.slice(0, 2), createdAt: serverTimestamp() });
+      await b.commit();
       try { localStorage.removeItem('mhgPendingListing'); } catch (e) {}
       listingsCache = null;
     } });
@@ -1306,6 +1433,10 @@ window.MHG_PAYMENT = {
     'Catering': ['Traiteur', 'Traktè', 'Catering'],
     'E-commerce': ['Commerce en ligne', 'Komès sou entènèt', 'Comercio electrónico'],
     'MLM': ['Marketing de réseau (MLM)', 'Maketing rezo (MLM)', 'Mercadeo en red (MLM)'],
+    'Airbnb': ['Airbnb / location courte durée', 'Airbnb / lokasyon kout tèm', 'Airbnb / alquiler vacacional'],
+    'Driver': ['Chauffeur', 'Chofè', 'Conductor'],
+    'Limousine': ['Limousine', 'Limouzin', 'Limusina'],
+    'Taxi': ['Taxi', 'Taksi', 'Taxi'],
     'Other': ['Autre', 'Lòt', 'Otro'],
     'Select Duration': ['Choisir la durée', 'Chwazi konbyen tan', 'Seleccione la duración'],
     'Starter': ['Débutant', 'Kòmansman', 'Principiante'],
@@ -1318,6 +1449,9 @@ window.MHG_PAYMENT = {
     'Brazil': ['Brésil', 'Brezil', 'Brasil'],
     'Dominican Republic': ['République dominicaine', 'Repiblik Dominikèn', 'República Dominicana'],
     'Puerto Rico': ['Porto Rico', 'Pòtoriko', 'Puerto Rico'],
+    'Martinique': ['Martinique', 'Matinik', 'Martinica'],
+    'Guadeloupe': ['Guadeloupe', 'Gwadloup', 'Guadalupe'],
+    'Saint Martin': ['Saint-Martin', 'Sen Maten', 'San Martín'],
     'Select State': ["Choisir l'État", 'Chwazi eta a', 'Seleccione el estado'],
     'Yes': ['Oui', 'Wi', 'Sí'],
     'No': ['Non', 'Non', 'No'],
