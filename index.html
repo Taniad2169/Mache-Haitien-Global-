@@ -186,6 +186,31 @@
       .serve-cities { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
     .serve-cities input:last-child { grid-column: 1 / -1; }
     .field-hint { display: block; font-size: 0.82rem; color: #556; margin-top: 4px; }
+      /* --- side-to-side slider --- */
+    .mhg-slider { overflow: hidden; margin: 0 -20px; }
+    .mhg-track { display: flex; align-items: flex-start; width: 200%; transition: transform .55s cubic-bezier(.65,0,.35,1); }
+    .mhg-track.show-search { transform: translateX(-50%); }
+    .mhg-panel { width: 50%; padding: 0 20px; box-sizing: border-box; }
+    .mhg-panel.mhg-collapsed { max-height: 0; overflow: hidden; visibility: hidden; }
+    @media (prefers-reduced-motion: reduce) { .mhg-track { transition: none; } }
+    .mhg-slide-btn { display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%; min-height: 50px; margin: 0 0 16px; padding: 12px 16px; border-radius: 999px; border: 0; font-size: 16px; font-weight: 800; cursor: pointer; }
+    .mhg-to-search { background: #f0e813; color: #142219; box-shadow: 0 6px 16px rgba(0,0,0,.15); }
+    .mhg-to-owners { background: #eef7ff; color: var(--brand-dark); border: 2px solid var(--brand-dark); }
+    .mhg-slide-btn:focus-visible, .mhg-big-btn:focus-visible { outline: 3px solid #ffd447; outline-offset: 2px; }
+    .mhg-video-ph { background: var(--gradient); }
+    .mhg-ph-inner { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px; color: #fff; text-align: center; }
+    .mhg-ph-play { width: 64px; height: 64px; border-radius: 50%; background: rgba(255,255,255,.25); display: grid; place-items: center; font-size: 26px; padding-left: 4px; }
+    .mhg-s-title { color: var(--brand-dark); font-size: 24px; line-height: 1.2; margin: 4px 0 10px; text-align: center; }
+    .mhg-s-lead { font-size: 17px; line-height: 1.5; text-align: center; margin-bottom: 16px; }
+    .mhg-s-examples { display: grid; gap: 10px; margin-bottom: 14px; }
+    .mhg-s-ex { display: flex; gap: 12px; align-items: flex-start; background: #eef7ff; border-radius: 12px; padding: 12px 14px; }
+    .mhg-s-ex span { font-size: 26px; line-height: 1; }
+    .mhg-s-ex p { font-size: 15px; line-height: 1.5; }
+    .mhg-s-unity { text-align: center; font-size: 18px; margin: 6px 0 18px; color: var(--brand-dark); }
+    .mhg-big-btn { display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%; min-height: 54px; margin-bottom: 12px; border-radius: 14px; border: 0; font-size: 17px; font-weight: 800; cursor: pointer; }
+    .mhg-big-search { background: var(--brand-dark); color: #fff; }
+    .mhg-big-install { background: #f0e813; color: #142219; }
+    .mhg-s-note { text-align: center; font-size: 14px; color: #556; margin-bottom: 6px; }
   </style>
 </head>
 <body>
@@ -204,16 +229,6 @@
   </div>
   <p id="mhgToast" class="mhg-toast" role="status" aria-live="polite"></p>
 
-  <!-- YOUTUBE VIDEO -->
-  <div class="video-container">
-    <iframe 
-      src="https://www.youtube-nocookie.com/embed/_q_sHw39WhE?rel=0" 
-      title="YouTube video player" 
-      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
-      allowfullscreen>
-    </iframe>
-  </div>
-
   <!-- LANGUAGE SELECTOR -->
   <div class="form-group" style="background: #eef7ff; padding: 10px; border-radius: 8px;">
     <label data-key="langLabel">Preferred Language / Langue Préférée / Lang Preferans / Idioma Preferido:</label>
@@ -223,6 +238,22 @@
       <option value="ht">Kreyòl Ayisyen</option>
       <option value="es">Español</option>
     </select>
+  </div>
+
+  <!-- SIDE-TO-SIDE SLIDER: business owners | people searching for a business -->
+  <div class="mhg-slider" id="mhgSlider">
+  <div class="mhg-track" id="mhgTrack">
+  <section class="mhg-panel" id="panelOwners" aria-label="Business owners">
+  <button type="button" class="mhg-slide-btn mhg-to-search" id="mhgGoSearch">🔎 <span data-s="goSearch">Searching for a business? Click here</span> <span aria-hidden="true">→</span></button>
+
+  <!-- YOUTUBE VIDEO -->
+  <div class="video-container">
+    <iframe 
+      src="https://www.youtube-nocookie.com/embed/_q_sHw39WhE?rel=0" 
+      title="YouTube video player" 
+      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+      allowfullscreen>
+    </iframe>
   </div>
 
   <!-- MAIN FORM -->
@@ -702,6 +733,29 @@
     <button type="submit" class="submit-btn" data-key="submitBtn">Register my business for free</button>
     <p id="saveStatus" class="save-status" role="status" aria-live="polite"></p>
   </form>
+  </section>
+
+  <section class="mhg-panel mhg-collapsed" id="panelSearch" aria-label="Searching for a business">
+    <button type="button" class="mhg-slide-btn mhg-to-owners" id="mhgGoOwners"><span aria-hidden="true">←</span> <span data-s="goOwners">Business owner? Register your business</span></button>
+
+    <!-- YOUTUBE VIDEO for people searching (placeholder until the video is ready) -->
+    <div class="video-container mhg-video-ph" id="searchVideo">
+      <div class="mhg-ph-inner"><span class="mhg-ph-play" aria-hidden="true">▶</span><b data-s="vidSoon">Video coming soon</b></div>
+    </div>
+
+    <h2 class="mhg-s-title" data-s="title">Find Haitian businesses around the world</h2>
+    <p class="mhg-s-lead" data-s="lead">Mache Ayisien Global helps Haitians locate Haitian businesses around the world, so we can support our community.</p>
+    <div class="mhg-s-examples">
+      <div class="mhg-s-ex"><span aria-hidden="true">🏠</span><p data-s="ex1">Many Haitians own Airbnbs around the world. They need to be visible, and Haitians need to know where they are to book a vacation or a business trip.</p></div>
+      <div class="mhg-s-ex"><span aria-hidden="true">🚗</span><p data-s="ex2">Some Haitians run transportation businesses, like airport rides by booking. Now they are visible and trusted to serve the Haitian community around the world.</p></div>
+    </div>
+    <p class="mhg-s-unity"><span data-s="unity">Let's stick together.</span> <b>L'union fait la force!</b> 🇭🇹</p>
+
+    <button type="button" class="mhg-big-btn mhg-big-search" id="mhgAskRachel">🔎 <span data-s="search">Search for a business now</span></button>
+    <button type="button" class="mhg-big-btn mhg-big-install" id="mhgInstall2">📲 <span data-s="install">Click here to install the app</span></button>
+    <p class="mhg-s-note" data-s="installNote">Add Mache Ayisien Global to your home screen so it's always one tap away.</p>
+  </section>
+  </div></div>
 </div>
 
 <script>
@@ -1904,5 +1958,79 @@ window.MHG_PAYMENT = {
 })();
 </script>
 
+<script>
+/* Side-to-side slide between the business-owner side and the "searching for a business" side. */
+(function () {
+  /* Paste the YouTube video id here when the video is ready, e.g. 'abc123XYZ'. */
+  var SEARCH_VIDEO_ID = '';
+  var S = {
+    en: { goSearch: 'Searching for a business? Click here', goOwners: 'Business owner? Register your business', vidSoon: 'Video coming soon',
+      title: 'Find Haitian businesses around the world',
+      lead: 'Mache Ayisien Global helps Haitians locate Haitian businesses around the world, so we can support our community.',
+      ex1: 'Many Haitians own Airbnbs around the world. They need to be visible, and Haitians need to know where they are to book a vacation or a business trip.',
+      ex2: 'Some Haitians run transportation businesses, like airport rides by booking. Now they are visible and trusted to serve the Haitian community around the world.',
+      unity: "Let's stick together.", search: 'Search for a business now', install: 'Click here to install the app',
+      installNote: "Add Mache Ayisien Global to your home screen so it's always one tap away." },
+    fr: { goSearch: 'Vous cherchez une entreprise ? Cliquez ici', goOwners: 'Entrepreneur ? Inscrivez votre entreprise', vidSoon: 'Vidéo bientôt disponible',
+      title: 'Trouvez des entreprises haïtiennes partout dans le monde',
+      lead: 'Mache Ayisien Global aide les Haïtiens à trouver des entreprises haïtiennes partout dans le monde, pour soutenir notre communauté.',
+      ex1: 'Beaucoup d’Haïtiens ont des Airbnb partout dans le monde. Ils doivent être visibles, et les Haïtiens doivent savoir où ils se trouvent pour réserver leurs vacances ou leurs voyages d’affaires.',
+      ex2: 'Certains Haïtiens ont des entreprises de transport, comme les trajets vers l’aéroport sur réservation. Maintenant, ils sont visibles et dignes de confiance pour servir la communauté haïtienne partout dans le monde.',
+      unity: 'Restons unis.', search: 'Chercher une entreprise maintenant', install: "Cliquez ici pour installer l'app",
+      installNote: "Ajoutez Mache Ayisien Global à votre écran d’accueil pour l’avoir toujours à portée de main." },
+    ht: { goSearch: 'W ap chèche yon biznis? Klike la a', goOwners: 'Ou gen yon biznis? Enskri biznis ou', vidSoon: 'Videyo a ap vini byento',
+      title: 'Jwenn biznis ayisyen toupatou nan lemond',
+      lead: 'Mache Ayisien Global ede Ayisyen jwenn biznis ayisyen toupatou nan lemond, pou nou ka sipòte kominote nou an.',
+      ex1: 'Anpil Ayisyen gen Airbnb toupatou nan lemond. Yo bezwen parèt, epi Ayisyen bezwen konnen ki kote yo ye pou yo ka rezève vakans yo oswa vwayaj biznis yo.',
+      ex2: 'Gen Ayisyen ki gen biznis transpò, tankou fè kous ayewopò sou rezèvasyon. Kounye a yo vizib epi moun fè yo konfyans pou sèvi kominote ayisyen an toupatou nan lemond.',
+      unity: 'Ann rete ansanm.', search: 'Chèche yon biznis kounye a', install: 'Klike la a pou enstale app la',
+      installNote: 'Mete Mache Ayisien Global sou ekran dakèy ou pou l toujou la lè w bezwen l.' },
+    es: { goSearch: '¿Busca un negocio? Haga clic aquí', goOwners: '¿Tiene un negocio? Regístrelo', vidSoon: 'Video próximamente',
+      title: 'Encuentre negocios haitianos en todo el mundo',
+      lead: 'Mache Ayisien Global ayuda a los haitianos a encontrar negocios haitianos en todo el mundo, para apoyar a nuestra comunidad.',
+      ex1: 'Muchos haitianos tienen Airbnb en todo el mundo. Necesitan ser visibles, y los haitianos necesitan saber dónde están para reservar sus vacaciones o viajes de negocios.',
+      ex2: 'Algunos haitianos tienen negocios de transporte, como viajes al aeropuerto con reserva. Ahora son visibles y de confianza para servir a la comunidad haitiana en todo el mundo.',
+      unity: 'Mantengámonos unidos.', search: 'Buscar un negocio ahora', install: 'Haga clic aquí para instalar la app',
+      installNote: 'Agregue Mache Ayisien Global a su pantalla de inicio para tenerlo siempre a mano.' }
+  };
+  var track = document.getElementById('mhgTrack');
+  var owners = document.getElementById('panelOwners'), search = document.getElementById('panelSearch');
+  var slider = document.getElementById('mhgSlider');
+
+  if (SEARCH_VIDEO_ID) {
+    var box = document.getElementById('searchVideo');
+    box.classList.remove('mhg-video-ph');
+    box.innerHTML = '<iframe src="https://www.youtube-nocookie.com/embed/' + encodeURIComponent(SEARCH_VIDEO_ID) + '?rel=0" title="Mache Ayisien Global video" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>';
+  }
+
+  function go(toSearch, instant) {
+    var show = toSearch ? search : owners, hide = toSearch ? owners : search;
+    show.classList.remove('mhg-collapsed');
+    if (instant) track.style.transition = 'none';
+    requestAnimationFrame(function () {
+      track.classList.toggle('show-search', toSearch);
+      var done = function () { hide.classList.add('mhg-collapsed'); track.style.transition = ''; };
+      if (instant) { done(); } else { setTimeout(done, 600); }
+      var top = slider.getBoundingClientRect().top + window.scrollY - 10;
+      if (window.scrollY > top) window.scrollTo({ top: top, behavior: instant ? 'auto' : 'smooth' });
+    });
+    try { history.replaceState(null, '', toSearch ? '#find' : location.pathname + location.search); } catch (e) {}
+    var f = show.querySelector('.mhg-slide-btn'); if (f && !instant) setTimeout(function () { f.focus({ preventScroll: true }); }, 600);
+  }
+  document.getElementById('mhgGoSearch').addEventListener('click', function () { go(true); });
+  document.getElementById('mhgGoOwners').addEventListener('click', function () { go(false); });
+  document.getElementById('mhgAskRachel').addEventListener('click', function () { var l = document.getElementById('mr-launch'); if (l) l.click(); });
+  document.getElementById('mhgInstall2').addEventListener('click', function () { var b = document.getElementById('mhgInstall'); if (b) b.click(); });
+  if (location.hash === '#find') go(true, true);
+
+  function applyLang(lang) {
+    var t = S[lang] || S.en;
+    document.querySelectorAll('[data-s]').forEach(function (el) { var k = el.getAttribute('data-s'); if (t[k]) el.textContent = t[k]; });
+  }
+  var prev = window.mhgAfterLanguage;
+  window.mhgAfterLanguage = function (lang) { if (typeof prev === 'function') prev(lang); applyLang(lang); };
+  var sel = document.getElementById('languageSelect'); applyLang(sel ? sel.value : 'en');
+})();
+</script>
 </body>
 </html>
