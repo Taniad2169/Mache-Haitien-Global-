@@ -210,6 +210,7 @@
     .mhg-big-btn { display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%; min-height: 54px; margin-bottom: 12px; border-radius: 14px; border: 0; font-size: 17px; font-weight: 800; cursor: pointer; }
     .mhg-big-search { background: var(--brand-dark); color: #fff; }
     .mhg-big-install { background: #f0e813; color: #142219; }
+    .mhg-big-db { background: #04541e; color: #fff; text-decoration: none; text-align: center; padding: 10px 14px; }
     .mhg-s-note { text-align: center; font-size: 14px; color: #556; margin-bottom: 6px; }
   </style>
 </head>
@@ -245,6 +246,7 @@
   <div class="mhg-track" id="mhgTrack">
   <section class="mhg-panel" id="panelOwners" aria-label="Business owners">
   <button type="button" class="mhg-slide-btn mhg-to-search" id="mhgGoSearch">🔎 <span data-s="goSearch">Searching for a business? Click here</span> <span aria-hidden="true">→</span></button>
+  <a class="mhg-big-btn mhg-big-db" href="https://taniad2169.github.io/George-Data-base/#business-owners" target="_blank" rel="noopener">🗂️ <span data-s="dbOwners">Click to view our database and sign up for free</span></a>
 
   <!-- YOUTUBE VIDEO -->
   <div class="video-container">
@@ -752,6 +754,7 @@
     <p class="mhg-s-unity"><span data-s="unity">Let's stick together.</span> <b>L'union fait la force!</b> 🇭🇹</p>
 
     <button type="button" class="mhg-big-btn mhg-big-search" id="mhgAskRachel">🔎 <span data-s="search">Search for a business now</span></button>
+    <a class="mhg-big-btn mhg-big-db" href="https://taniad2169.github.io/George-Data-base/#directory" target="_blank" rel="noopener">🏪 <span data-s="dbClients">Click to view our merchants and services</span></a>
     <button type="button" class="mhg-big-btn mhg-big-install" id="mhgInstall2">📲 <span data-s="install">Click here to install the app</span></button>
     <p class="mhg-s-note" data-s="installNote">Add Mache Ayisien Global to your home screen so it's always one tap away.</p>
   </section>
@@ -1964,28 +1967,28 @@ window.MHG_PAYMENT = {
   /* Paste the YouTube video id here when the video is ready, e.g. 'abc123XYZ'. */
   var SEARCH_VIDEO_ID = '';
   var S = {
-    en: { goSearch: 'Searching for a business? Click here', goOwners: 'Business owner? Register your business', vidSoon: 'Video coming soon',
+    en: { dbOwners: "Click to view our database and sign up for free", dbClients: "Click to view our merchants and services", goSearch: 'Searching for a business? Click here', goOwners: 'Business owner? Register your business', vidSoon: 'Video coming soon',
       title: 'Find Haitian businesses around the world',
       lead: 'Mache Ayisien Global helps Haitians locate Haitian businesses around the world, so we can support our community.',
       ex1: 'Many Haitians own Airbnbs around the world. They need to be visible, and Haitians need to know where they are to book a vacation or a business trip.',
       ex2: 'Some Haitians run transportation businesses, like airport rides by booking. Now they are visible and trusted to serve the Haitian community around the world.',
       unity: "Let's stick together.", search: 'Search for a business now', install: 'Click here to install the app',
       installNote: "Add Mache Ayisien Global to your home screen so it's always one tap away." },
-    fr: { goSearch: 'Vous cherchez une entreprise ? Cliquez ici', goOwners: 'Entrepreneur ? Inscrivez votre entreprise', vidSoon: 'Vidéo bientôt disponible',
+    fr: { dbOwners: "Voir notre annuaire et s’inscrire gratuitement", dbClients: "Voir nos commerçants et services", goSearch: 'Vous cherchez une entreprise ? Cliquez ici', goOwners: 'Entrepreneur ? Inscrivez votre entreprise', vidSoon: 'Vidéo bientôt disponible',
       title: 'Trouvez des entreprises haïtiennes partout dans le monde',
       lead: 'Mache Ayisien Global aide les Haïtiens à trouver des entreprises haïtiennes partout dans le monde, pour soutenir notre communauté.',
       ex1: 'Beaucoup d’Haïtiens ont des Airbnb partout dans le monde. Ils doivent être visibles, et les Haïtiens doivent savoir où ils se trouvent pour réserver leurs vacances ou leurs voyages d’affaires.',
       ex2: 'Certains Haïtiens ont des entreprises de transport, comme les trajets vers l’aéroport sur réservation. Maintenant, ils sont visibles et dignes de confiance pour servir la communauté haïtienne partout dans le monde.',
       unity: 'Restons unis.', search: 'Chercher une entreprise maintenant', install: "Cliquez ici pour installer l'app",
       installNote: "Ajoutez Mache Ayisien Global à votre écran d’accueil pour l’avoir toujours à portée de main." },
-    ht: { goSearch: 'W ap chèche yon biznis? Klike la a', goOwners: 'Ou gen yon biznis? Enskri biznis ou', vidSoon: 'Videyo a ap vini byento',
+    ht: { dbOwners: "Klike pou wè anyè nou an epi enskri gratis", dbClients: "Klike pou wè machann ak sèvis nou yo", goSearch: 'W ap chèche yon biznis? Klike la a', goOwners: 'Ou gen yon biznis? Enskri biznis ou', vidSoon: 'Videyo a ap vini byento',
       title: 'Jwenn biznis ayisyen toupatou nan lemond',
       lead: 'Mache Ayisien Global ede Ayisyen jwenn biznis ayisyen toupatou nan lemond, pou nou ka sipòte kominote nou an.',
       ex1: 'Anpil Ayisyen gen Airbnb toupatou nan lemond. Yo bezwen parèt, epi Ayisyen bezwen konnen ki kote yo ye pou yo ka rezève vakans yo oswa vwayaj biznis yo.',
       ex2: 'Gen Ayisyen ki gen biznis transpò, tankou fè kous ayewopò sou rezèvasyon. Kounye a yo vizib epi moun fè yo konfyans pou sèvi kominote ayisyen an toupatou nan lemond.',
       unity: 'Ann rete ansanm.', search: 'Chèche yon biznis kounye a', install: 'Klike la a pou enstale app la',
       installNote: 'Mete Mache Ayisien Global sou ekran dakèy ou pou l toujou la lè w bezwen l.' },
-    es: { goSearch: '¿Busca un negocio? Haga clic aquí', goOwners: '¿Tiene un negocio? Regístrelo', vidSoon: 'Video próximamente',
+    es: { dbOwners: "Ver nuestro directorio e inscribirse gratis", dbClients: "Ver nuestros comerciantes y servicios", goSearch: '¿Busca un negocio? Haga clic aquí', goOwners: '¿Tiene un negocio? Regístrelo', vidSoon: 'Video próximamente',
       title: 'Encuentre negocios haitianos en todo el mundo',
       lead: 'Mache Ayisien Global ayuda a los haitianos a encontrar negocios haitianos en todo el mundo, para apoyar a nuestra comunidad.',
       ex1: 'Muchos haitianos tienen Airbnb en todo el mundo. Necesitan ser visibles, y los haitianos necesitan saber dónde están para reservar sus vacaciones o viajes de negocios.',
