@@ -10,7 +10,7 @@
   <link rel="apple-touch-icon" href="apple-touch-icon.png">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-title" content="Mache Haitien">
+  <meta name="apple-mobile-web-app-title" content="Mache Ayisien">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <style>
     /* --- BRAND COLORS & VARIABLES --- */
@@ -183,6 +183,9 @@
     .mhg-sheet ol { padding-left: 20px; line-height: 1.6; font-size: 15px; color: #333; }
     .mhg-sheet p { font-size: 13.5px; color: #4a5b6a; margin-top: 10px; }
     .mhg-sheet button { margin-top: 14px; width: 100%; }
+      .serve-cities { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+    .serve-cities input:last-child { grid-column: 1 / -1; }
+    .field-hint { display: block; font-size: 0.82rem; color: #556; margin-top: 4px; }
   </style>
 </head>
 <body>
@@ -333,15 +336,256 @@
       <select id="country" required onchange="toggleStates(this)">
         <option value="">Select Country</option>
         <option value="United States">United States</option>
+        <option value="Canada">Canada</option>
         <option value="France">France</option>
         <option value="Haiti">Haiti</option>
-        <option value="Canada">Canada</option>
         <option value="Brazil">Brazil</option>
+        <option value="Chile">Chile</option>
         <option value="Dominican Republic">Dominican Republic</option>
         <option value="Puerto Rico">Puerto Rico</option>
         <option value="Martinique">Martinique</option>
         <option value="Guadeloupe">Guadeloupe</option>
         <option value="Saint Martin">Saint Martin</option>
+        <optgroup label="All other countries" data-key="otherCountries">
+          <option value="Afghanistan">Afghanistan</option>
+          <option value="Albania">Albania</option>
+          <option value="Algeria">Algeria</option>
+          <option value="American Samoa">American Samoa</option>
+          <option value="Andorra">Andorra</option>
+          <option value="Angola">Angola</option>
+          <option value="Anguilla">Anguilla</option>
+          <option value="Antarctica">Antarctica</option>
+          <option value="Antigua and Barbuda">Antigua and Barbuda</option>
+          <option value="Argentina">Argentina</option>
+          <option value="Armenia">Armenia</option>
+          <option value="Aruba">Aruba</option>
+          <option value="Australia">Australia</option>
+          <option value="Austria">Austria</option>
+          <option value="Azerbaijan">Azerbaijan</option>
+          <option value="Bahamas">Bahamas</option>
+          <option value="Bahrain">Bahrain</option>
+          <option value="Bangladesh">Bangladesh</option>
+          <option value="Barbados">Barbados</option>
+          <option value="Belarus">Belarus</option>
+          <option value="Belgium">Belgium</option>
+          <option value="Belize">Belize</option>
+          <option value="Benin">Benin</option>
+          <option value="Bermuda">Bermuda</option>
+          <option value="Bhutan">Bhutan</option>
+          <option value="Bolivia">Bolivia</option>
+          <option value="Bonaire, Sint Eustatius and Saba">Bonaire, Sint Eustatius and Saba</option>
+          <option value="Bosnia and Herzegovina">Bosnia and Herzegovina</option>
+          <option value="Botswana">Botswana</option>
+          <option value="Bouvet Island">Bouvet Island</option>
+          <option value="British Indian Ocean Territory">British Indian Ocean Territory</option>
+          <option value="British Virgin Islands">British Virgin Islands</option>
+          <option value="Brunei Darussalam">Brunei Darussalam</option>
+          <option value="Bulgaria">Bulgaria</option>
+          <option value="Burkina Faso">Burkina Faso</option>
+          <option value="Burundi">Burundi</option>
+          <option value="Cabo Verde">Cabo Verde</option>
+          <option value="Cambodia">Cambodia</option>
+          <option value="Cameroon">Cameroon</option>
+          <option value="Cayman Islands">Cayman Islands</option>
+          <option value="Central African Republic">Central African Republic</option>
+          <option value="Chad">Chad</option>
+          <option value="China">China</option>
+          <option value="Christmas Island">Christmas Island</option>
+          <option value="Cocos (Keeling) Islands">Cocos (Keeling) Islands</option>
+          <option value="Colombia">Colombia</option>
+          <option value="Comoros">Comoros</option>
+          <option value="Congo">Congo</option>
+          <option value="Cook Islands">Cook Islands</option>
+          <option value="Costa Rica">Costa Rica</option>
+          <option value="Croatia">Croatia</option>
+          <option value="Cuba">Cuba</option>
+          <option value="Curaçao">Curaçao</option>
+          <option value="Cyprus">Cyprus</option>
+          <option value="Czech Republic">Czech Republic</option>
+          <option value="Côte d'Ivoire">Côte d'Ivoire</option>
+          <option value="Democratic Republic of the Congo">Democratic Republic of the Congo</option>
+          <option value="Denmark">Denmark</option>
+          <option value="Djibouti">Djibouti</option>
+          <option value="Dominica">Dominica</option>
+          <option value="Ecuador">Ecuador</option>
+          <option value="Egypt">Egypt</option>
+          <option value="El Salvador">El Salvador</option>
+          <option value="Equatorial Guinea">Equatorial Guinea</option>
+          <option value="Eritrea">Eritrea</option>
+          <option value="Estonia">Estonia</option>
+          <option value="Eswatini">Eswatini</option>
+          <option value="Ethiopia">Ethiopia</option>
+          <option value="Falkland Islands (Malvinas)">Falkland Islands (Malvinas)</option>
+          <option value="Faroe Islands">Faroe Islands</option>
+          <option value="Fiji">Fiji</option>
+          <option value="Finland">Finland</option>
+          <option value="French Guiana">French Guiana</option>
+          <option value="French Polynesia">French Polynesia</option>
+          <option value="French Southern Territories">French Southern Territories</option>
+          <option value="Gabon">Gabon</option>
+          <option value="Gambia">Gambia</option>
+          <option value="Georgia">Georgia</option>
+          <option value="Germany">Germany</option>
+          <option value="Ghana">Ghana</option>
+          <option value="Gibraltar">Gibraltar</option>
+          <option value="Greece">Greece</option>
+          <option value="Greenland">Greenland</option>
+          <option value="Grenada">Grenada</option>
+          <option value="Guam">Guam</option>
+          <option value="Guatemala">Guatemala</option>
+          <option value="Guernsey">Guernsey</option>
+          <option value="Guinea">Guinea</option>
+          <option value="Guinea-Bissau">Guinea-Bissau</option>
+          <option value="Guyana">Guyana</option>
+          <option value="Heard Island and McDonald Islands">Heard Island and McDonald Islands</option>
+          <option value="Honduras">Honduras</option>
+          <option value="Hong Kong">Hong Kong</option>
+          <option value="Hungary">Hungary</option>
+          <option value="Iceland">Iceland</option>
+          <option value="India">India</option>
+          <option value="Indonesia">Indonesia</option>
+          <option value="Iran">Iran</option>
+          <option value="Iraq">Iraq</option>
+          <option value="Ireland">Ireland</option>
+          <option value="Isle of Man">Isle of Man</option>
+          <option value="Israel">Israel</option>
+          <option value="Italy">Italy</option>
+          <option value="Jamaica">Jamaica</option>
+          <option value="Japan">Japan</option>
+          <option value="Jersey">Jersey</option>
+          <option value="Jordan">Jordan</option>
+          <option value="Kazakhstan">Kazakhstan</option>
+          <option value="Kenya">Kenya</option>
+          <option value="Kiribati">Kiribati</option>
+          <option value="Kuwait">Kuwait</option>
+          <option value="Kyrgyzstan">Kyrgyzstan</option>
+          <option value="Laos">Laos</option>
+          <option value="Latvia">Latvia</option>
+          <option value="Lebanon">Lebanon</option>
+          <option value="Lesotho">Lesotho</option>
+          <option value="Liberia">Liberia</option>
+          <option value="Libya">Libya</option>
+          <option value="Liechtenstein">Liechtenstein</option>
+          <option value="Lithuania">Lithuania</option>
+          <option value="Luxembourg">Luxembourg</option>
+          <option value="Macao">Macao</option>
+          <option value="Madagascar">Madagascar</option>
+          <option value="Malawi">Malawi</option>
+          <option value="Malaysia">Malaysia</option>
+          <option value="Maldives">Maldives</option>
+          <option value="Mali">Mali</option>
+          <option value="Malta">Malta</option>
+          <option value="Marshall Islands">Marshall Islands</option>
+          <option value="Mauritania">Mauritania</option>
+          <option value="Mauritius">Mauritius</option>
+          <option value="Mayotte">Mayotte</option>
+          <option value="Mexico">Mexico</option>
+          <option value="Micronesia">Micronesia</option>
+          <option value="Moldova">Moldova</option>
+          <option value="Monaco">Monaco</option>
+          <option value="Mongolia">Mongolia</option>
+          <option value="Montenegro">Montenegro</option>
+          <option value="Montserrat">Montserrat</option>
+          <option value="Morocco">Morocco</option>
+          <option value="Mozambique">Mozambique</option>
+          <option value="Myanmar">Myanmar</option>
+          <option value="Namibia">Namibia</option>
+          <option value="Nauru">Nauru</option>
+          <option value="Nepal">Nepal</option>
+          <option value="Netherlands">Netherlands</option>
+          <option value="New Caledonia">New Caledonia</option>
+          <option value="New Zealand">New Zealand</option>
+          <option value="Nicaragua">Nicaragua</option>
+          <option value="Niger">Niger</option>
+          <option value="Nigeria">Nigeria</option>
+          <option value="Niue">Niue</option>
+          <option value="Norfolk Island">Norfolk Island</option>
+          <option value="North Korea">North Korea</option>
+          <option value="North Macedonia">North Macedonia</option>
+          <option value="Northern Mariana Islands">Northern Mariana Islands</option>
+          <option value="Norway">Norway</option>
+          <option value="Oman">Oman</option>
+          <option value="Pakistan">Pakistan</option>
+          <option value="Palau">Palau</option>
+          <option value="Palestine">Palestine</option>
+          <option value="Panama">Panama</option>
+          <option value="Papua New Guinea">Papua New Guinea</option>
+          <option value="Paraguay">Paraguay</option>
+          <option value="Peru">Peru</option>
+          <option value="Philippines">Philippines</option>
+          <option value="Pitcairn">Pitcairn</option>
+          <option value="Poland">Poland</option>
+          <option value="Portugal">Portugal</option>
+          <option value="Qatar">Qatar</option>
+          <option value="Romania">Romania</option>
+          <option value="Russia">Russia</option>
+          <option value="Rwanda">Rwanda</option>
+          <option value="Réunion">Réunion</option>
+          <option value="Saint Barthélemy">Saint Barthélemy</option>
+          <option value="Saint Helena, Ascension and Tristan da Cunha">Saint Helena, Ascension and Tristan da Cunha</option>
+          <option value="Saint Kitts and Nevis">Saint Kitts and Nevis</option>
+          <option value="Saint Lucia">Saint Lucia</option>
+          <option value="Saint Pierre and Miquelon">Saint Pierre and Miquelon</option>
+          <option value="Saint Vincent and the Grenadines">Saint Vincent and the Grenadines</option>
+          <option value="Samoa">Samoa</option>
+          <option value="San Marino">San Marino</option>
+          <option value="Sao Tome and Principe">Sao Tome and Principe</option>
+          <option value="Saudi Arabia">Saudi Arabia</option>
+          <option value="Senegal">Senegal</option>
+          <option value="Serbia">Serbia</option>
+          <option value="Seychelles">Seychelles</option>
+          <option value="Sierra Leone">Sierra Leone</option>
+          <option value="Singapore">Singapore</option>
+          <option value="Sint Maarten">Sint Maarten</option>
+          <option value="Slovakia">Slovakia</option>
+          <option value="Slovenia">Slovenia</option>
+          <option value="Solomon Islands">Solomon Islands</option>
+          <option value="Somalia">Somalia</option>
+          <option value="South Africa">South Africa</option>
+          <option value="South Georgia and the South Sandwich Islands">South Georgia and the South Sandwich Islands</option>
+          <option value="South Korea">South Korea</option>
+          <option value="South Sudan">South Sudan</option>
+          <option value="Spain">Spain</option>
+          <option value="Sri Lanka">Sri Lanka</option>
+          <option value="Sudan">Sudan</option>
+          <option value="Suriname">Suriname</option>
+          <option value="Svalbard and Jan Mayen">Svalbard and Jan Mayen</option>
+          <option value="Sweden">Sweden</option>
+          <option value="Switzerland">Switzerland</option>
+          <option value="Syria">Syria</option>
+          <option value="Taiwan">Taiwan</option>
+          <option value="Tajikistan">Tajikistan</option>
+          <option value="Tanzania">Tanzania</option>
+          <option value="Thailand">Thailand</option>
+          <option value="Timor-Leste">Timor-Leste</option>
+          <option value="Togo">Togo</option>
+          <option value="Tokelau">Tokelau</option>
+          <option value="Tonga">Tonga</option>
+          <option value="Trinidad and Tobago">Trinidad and Tobago</option>
+          <option value="Tunisia">Tunisia</option>
+          <option value="Turkey">Turkey</option>
+          <option value="Turkmenistan">Turkmenistan</option>
+          <option value="Turks and Caicos Islands">Turks and Caicos Islands</option>
+          <option value="Tuvalu">Tuvalu</option>
+          <option value="U.S. Virgin Islands">U.S. Virgin Islands</option>
+          <option value="Uganda">Uganda</option>
+          <option value="Ukraine">Ukraine</option>
+          <option value="United Arab Emirates">United Arab Emirates</option>
+          <option value="United Kingdom">United Kingdom</option>
+          <option value="United States Minor Outlying Islands">United States Minor Outlying Islands</option>
+          <option value="Uruguay">Uruguay</option>
+          <option value="Uzbekistan">Uzbekistan</option>
+          <option value="Vanuatu">Vanuatu</option>
+          <option value="Vatican City">Vatican City</option>
+          <option value="Venezuela">Venezuela</option>
+          <option value="Vietnam">Vietnam</option>
+          <option value="Wallis and Futuna">Wallis and Futuna</option>
+          <option value="Western Sahara">Western Sahara</option>
+          <option value="Yemen">Yemen</option>
+          <option value="Zambia">Zambia</option>
+          <option value="Zimbabwe">Zimbabwe</option>
+          <option value="Åland Islands">Åland Islands</option>
+        </optgroup>
       </select>
       
       <!-- US States Dropdown -->
@@ -387,20 +631,44 @@
       </div>
     </div>
 
-    <!-- WhatsApp Logic -->
+    <!-- WhatsApp number (optional) -->
     <div class="form-group">
-      <label data-key="whatsappLabel">Do you have WhatsApp?</label>
-      <select id="hasWhatsapp" required onchange="toggleWhatsapp(this)">
-        <option value="No">No</option>
-        <option value="Yes">Yes</option>
-      </select>
-      <div id="whatsappBox" class="conditional-box hidden">
-        <label data-key="whatsappWillingLabel">Are you willing to get WhatsApp for communication?</label>
-        <select id="willingWhatsapp">
-          <option value="Yes">Yes</option>
-          <option value="No">No</option>
-        </select>
+      <label data-key="whatsappNumLabel" for="whatsappNumber">WhatsApp number (optional, with country code):</label>
+      <input type="tel" id="whatsappNumber" inputmode="tel" maxlength="25" pattern="[0-9 \+\(\)\.\-]{7,25}" placeholder="+1 555 123 4567">
+      <small class="field-hint" data-key="whatsappNumHint">If you have WhatsApp, add your number so customers can message you. If not, leave it empty.</small>
+    </div>
+
+    <!-- Cities served (up to 5) -->
+    <div class="form-group">
+      <label data-key="citiesLabel">Other cities you serve (up to 5, optional):</label>
+      <div class="serve-cities">
+        <input type="text" class="serveCity" maxlength="120" data-key="serveCityPh" placeholder="City">
+        <input type="text" class="serveCity" maxlength="120" data-key="serveCityPh" placeholder="City">
+        <input type="text" class="serveCity" maxlength="120" data-key="serveCityPh" placeholder="City">
+        <input type="text" class="serveCity" maxlength="120" data-key="serveCityPh" placeholder="City">
+        <input type="text" class="serveCity" maxlength="120" data-key="serveCityPh" placeholder="City">
       </div>
+    </div>
+
+    <!-- How customers reach the business -->
+    <div class="form-group">
+      <label data-key="modeLabel" for="serviceMode">How do you serve your customers?</label>
+      <select id="serviceMode" required>
+        <option value="">Choose one</option>
+        <option value="storefront">Storefront / office with a permanent address</option>
+        <option value="appointment">By appointment only</option>
+        <option value="mobile">Mobile (food truck, I come to you, no permanent address)</option>
+      </select>
+    </div>
+
+    <!-- Licensed -->
+    <div class="form-group">
+      <label data-key="licensedLabel" for="licensed">Are you or your business licensed?</label>
+      <select id="licensed" required>
+        <option value="">Choose one</option>
+        <option value="Yes">Yes</option>
+        <option value="No">No</option>
+      </select>
     </div>
 
     <!-- Comment Box -->
@@ -431,7 +699,7 @@
 
     <!-- Submit Button -->
     <p class="privacy-note" data-key="privacyNote">Your business name, industry, city, phone and website will appear in our public directory so Rachel can help customers find you. Your name, email and comments stay private.</p>
-    <button type="submit" class="submit-btn" data-key="submitBtn">Submit and continue to payment</button>
+    <button type="submit" class="submit-btn" data-key="submitBtn">Register my business for free</button>
     <p id="saveStatus" class="save-status" role="status" aria-live="polite"></p>
   </form>
 </div>
@@ -442,7 +710,7 @@
     en: {
       langLabel: "Preferred Language:",
       ownerLabel: "Name of Owner:",
-      phoneLabel: "Business Phone / WhatsApp (with country code):",
+      phoneLabel: "Business Phone (with country code):",
       emailLabel: "Business Email (private):",
       websiteLabel: "Website or social media link (optional):",
       privacyNote: "Your business name, industry, city, phone and website will appear in our public directory so Rachel can help customers find you. Your name, email and comments stay private.",
@@ -462,14 +730,22 @@
       extraLabel: "Anything else you want us to know? (250 words max)",
       reviewLabel: "Your Google review link (optional):",
       photosLabel: "Photos of you at work or of your products (up to 2, optional):",
-      submitBtn: "Submit and continue to payment",
-      savedMsg: "Saved! Thank you, your business was added to our directory list.",
+      submitBtn: "Register my business for free",
+      whatsappNumLabel: "WhatsApp number (optional, with country code):",
+      whatsappNumHint: "If you have WhatsApp, add your number so customers can message you. If not, leave it empty.",
+      citiesLabel: "Other cities you serve (up to 5, optional):",
+      serveCityPh: "City",
+      modeLabel: "How do you serve your customers?",
+      licensedLabel: "Are you or your business licensed?",
+      otherCountries: "All other countries",
+      savingMsg: "Saving your business…",
+      savedMsg: "Thank you! Your business is now registered in the Mache Ayisien Global directory.",
       saveErrMsg: "We couldn't save your entry. Please message us on WhatsApp so we can add your business."
     },
     fr: {
       langLabel: "Langue Préférée:",
       ownerLabel: "Nom du Propriétaire:",
-      phoneLabel: "Téléphone / WhatsApp de l'entreprise (avec indicatif pays) :",
+      phoneLabel: "Téléphone de l'entreprise (avec indicatif pays) :",
       emailLabel: "Email de l'entreprise (privé) :",
       websiteLabel: "Site web ou lien de réseau social (optionnel) :",
       privacyNote: "Le nom, le secteur, la ville, le téléphone et le site web de votre entreprise apparaîtront dans notre annuaire public pour que Rachel aide les clients à vous trouver. Votre nom, votre email et vos commentaires restent privés.",
@@ -489,14 +765,22 @@
       extraLabel: "Autre chose que vous voulez nous dire ? (250 mots max)",
       reviewLabel: "Votre lien d'avis Google (facultatif) :",
       photosLabel: "Photos de vous au travail ou de vos produits (2 max, facultatif) :",
-      submitBtn: "Soumettre et passer au paiement",
-      savedMsg: "Enregistré ! Merci, votre entreprise a été ajoutée à notre liste.",
+      submitBtn: "Inscrire mon entreprise gratuitement",
+      whatsappNumLabel: "Numéro WhatsApp (facultatif, avec indicatif pays) :",
+      whatsappNumHint: "Si vous avez WhatsApp, ajoutez votre numéro pour que les clients vous écrivent. Sinon, laissez vide.",
+      citiesLabel: "Autres villes que vous desservez (jusqu'à 5, facultatif) :",
+      serveCityPh: "Ville",
+      modeLabel: "Comment servez-vous vos clients ?",
+      licensedLabel: "Êtes-vous, vous ou votre entreprise, titulaire d’une licence ?",
+      otherCountries: "Tous les autres pays",
+      savingMsg: "Enregistrement de votre entreprise…",
+      savedMsg: "Merci ! Votre entreprise est maintenant inscrite dans l’annuaire Mache Ayisien Global.",
       saveErrMsg: "Nous n'avons pas pu enregistrer votre inscription. Écrivez-nous sur WhatsApp pour que nous ajoutions votre entreprise."
     },
     ht: {
       langLabel: "Lang Preferans:",
       ownerLabel: "Non Pwopriyetè:",
-      phoneLabel: "Telefòn / WhatsApp biznis la (ak kòd peyi a):",
+      phoneLabel: "Telefòn biznis la (ak kòd peyi a):",
       emailLabel: "Imel biznis la (prive):",
       websiteLabel: "Sit wèb oswa lyen rezo sosyal (opsyonèl):",
       privacyNote: "Non biznis ou, endistri a, vil la, telefòn ak sit wèb ou ap parèt nan anyè piblik nou an pou Rachel ka ede kliyan jwenn ou. Non ou, imel ou ak kòmantè ou rete prive.",
@@ -516,14 +800,22 @@
       extraLabel: "Èske gen lòt bagay ou vle nou konnen? (250 mo max)",
       reviewLabel: "Lyen revizyon Google ou (si w genyen):",
       photosLabel: "Foto w ap travay oswa foto pwodwi ou (2 maksimòm, si w vle):",
-      submitBtn: "Soumèt epi kontinye pou peye",
-      savedMsg: "Anrejistre! Mèsi, biznis ou ajoute nan lis nou an.",
+      submitBtn: "Enskri biznis mwen gratis",
+      whatsappNumLabel: "Nimewo WhatsApp (si ou genyen, ak kòd peyi a):",
+      whatsappNumHint: "Si w gen WhatsApp, mete nimewo a pou kliyan ka ekri w. Si w pa genyen, kite l vid.",
+      citiesLabel: "Lòt vil ou sèvi (jiska 5, si ou vle):",
+      serveCityPh: "Vil",
+      modeLabel: "Kijan ou sèvi kliyan ou yo?",
+      licensedLabel: "Èske ou menm oswa biznis ou gen lisans?",
+      otherCountries: "Tout lòt peyi yo",
+      savingMsg: "N ap anrejistre biznis ou…",
+      savedMsg: "Mèsi! Biznis ou enskri kounye a nan anyè Mache Ayisien Global la.",
       saveErrMsg: "Nou pa t ka anrejistre enfòmasyon ou. Tanpri ekri nou sou WhatsApp pou nou ka ajoute biznis ou."
     },
     es: {
       langLabel: "Idioma preferido:",
       ownerLabel: "Nombre del propietario:",
-      phoneLabel: "Teléfono / WhatsApp del negocio (con código de país):",
+      phoneLabel: "Teléfono del negocio (con código de país):",
       emailLabel: "Correo del negocio (privado):",
       websiteLabel: "Sitio web o enlace de redes sociales (opcional):",
       privacyNote: "El nombre, la industria, la ciudad, el teléfono y el sitio web de su negocio aparecerán en nuestro directorio público para que Rachel ayude a los clientes a encontrarlo. Su nombre, su correo y sus comentarios se mantienen privados.",
@@ -543,8 +835,16 @@
       extraLabel: "¿Algo más que quiera que sepamos? (máx. 250 palabras)",
       reviewLabel: "Su enlace de reseñas de Google (opcional):",
       photosLabel: "Fotos suyas trabajando o de sus productos (máx. 2, opcional):",
-      submitBtn: "Enviar y continuar al pago",
-      savedMsg: "¡Guardado! Gracias, su negocio fue agregado a nuestro directorio.",
+      submitBtn: "Registrar mi negocio gratis",
+      whatsappNumLabel: "Número de WhatsApp (opcional, con código de país):",
+      whatsappNumHint: "Si tiene WhatsApp, agregue su número para que los clientes le escriban. Si no, déjelo vacío.",
+      citiesLabel: "Otras ciudades que atiende (hasta 5, opcional):",
+      serveCityPh: "Ciudad",
+      modeLabel: "¿Cómo atiende a sus clientes?",
+      licensedLabel: "¿Usted o su negocio tiene licencia?",
+      otherCountries: "Todos los demás países",
+      savingMsg: "Guardando su negocio…",
+      savedMsg: "¡Gracias! Su negocio ya está registrado en el directorio Mache Ayisien Global.",
       saveErrMsg: "No pudimos guardar su información. Escríbanos por WhatsApp para agregar su negocio."
     }
   };
@@ -556,7 +856,9 @@
     elements.forEach(el => {
       const key = el.getAttribute('data-key');
       if (translations[lang] && translations[lang][key]) {
-        if (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA') {
+        if (el.tagName === 'OPTGROUP') {
+          el.label = translations[lang][key];
+        } else if (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA') {
           el.placeholder = translations[lang][key];
         } else {
           el.innerText = translations[lang][key];
@@ -615,8 +917,12 @@
     const adCheckboxes = document.querySelectorAll('input[name="advertise"]:checked');
     const advertise = Array.from(adCheckboxes).map(cb => cb.value).join(', ');
     
-    const hasWhatsapp = document.getElementById('hasWhatsapp').value;
-    const willingWhatsapp = document.getElementById('willingWhatsapp') ? document.getElementById('willingWhatsapp').value : 'N/A';
+    const whatsappNumber = document.getElementById('whatsappNumber').value.trim();
+    const hasWhatsapp = whatsappNumber ? 'Yes' : 'No';
+    const serviceCities = Array.from(document.querySelectorAll('.serveCity')).map(i => i.value.trim()).filter(Boolean).slice(0, 5);
+    const serviceMode = document.getElementById('serviceMode').value;
+    const licensed = document.getElementById('licensed').value;
+    const modeText = { storefront: 'Storefront / office', appointment: 'By appointment only', mobile: 'Mobile (no permanent address)' }[serviceMode] || '';
     const comments = document.getElementById('comments').value;
     const extraNotes = document.getElementById('extraNotes').value.trim();
     let googleReview = document.getElementById('googleReview').value.trim();
@@ -639,7 +945,10 @@
     message += `*Location:* ${country} ${state ? '- ' + state : ''}\n`;
     message += `*Social Media:* ${hasSocial} ${socials ? '- ' + socials : ''}\n`;
     message += `*Advertising:* ${advertise || 'Not specified'}\n`;
-    message += `*WhatsApp:* ${hasWhatsapp} ${hasWhatsapp === 'No' ? '(Willing to get: ' + willingWhatsapp + ')' : ''}\n`;
+    message += `*WhatsApp:* ${whatsappNumber || 'None'}\n`;
+    if (serviceCities.length) message += `*Also serves:* ${serviceCities.join(', ')}\n`;
+    message += `*How they serve customers:* ${modeText}\n`;
+    message += `*Licensed:* ${licensed}\n`;
     message += `*Comments:* ${comments || 'None'}\n`;
     if (extraNotes) message += `*Anything else:* ${extraNotes}\n`;
     if (googleReview) message += `*Google reviews:* ${googleReview}\n`;
@@ -659,7 +968,10 @@
       socialMedia: Array.from(socialCheckboxes).map(cb => cb.value),
       advertising: Array.from(adCheckboxes).map(cb => cb.value),
       hasWhatsapp: hasWhatsapp,
-      willingToGetWhatsapp: hasWhatsapp === 'No' ? willingWhatsapp : '',
+      whatsappNumber: whatsappNumber,
+      serviceCities: serviceCities,
+      serviceMode: serviceMode,
+      licensed: licensed,
       comments: comments.trim(),
       phone: bizPhone,
       email: bizEmail,
@@ -669,18 +981,23 @@
       source: 'mache-haitien-global-web'
     };
 
-    // WhatsApp stays available as an optional button after payment
     const waUrl = `https://wa.me/16468988279?text=${encodeURIComponent(message)}`;
 
-    // Payment first. The business is saved to the directory only after the payment is approved.
-    if (!window.MHGPay || !window.saveBusinessSubmission) { window.open(waUrl, '_blank'); return; }
-    window.MHGPay.open({
-      lang: lang,
-      email: bizEmail,
-      whatsapp: waUrl,
-      onPaid: payment => window.saveBusinessSubmission(data, lang, payment),
-      beforeRedirect: () => window.saveBusinessSubmission(data, lang, { status: 'pending', method: 'stripe' }, true)
-    });
+    // Free registration: the business is saved to the directory right away (no payment).
+    if (!window.saveBusinessSubmission) { window.open(waUrl, '_blank'); return; }
+    const status = document.getElementById('saveStatus');
+    const tr = translations[lang] || translations.en;
+    const btn = document.querySelector('#businessForm .submit-btn');
+    if (status) { status.className = 'save-status'; status.textContent = tr.savingMsg || 'Saving…'; }
+    if (btn) btn.disabled = true;
+    window.saveBusinessSubmission(data, lang, { status: 'free', method: 'free' })
+      .catch(() => {
+        if (status) {
+          const a = document.createElement('a'); a.href = waUrl; a.target = '_blank'; a.rel = 'noopener'; a.textContent = ' WhatsApp';
+          status.appendChild(a);
+        }
+      })
+      .finally(() => { if (btn) btn.disabled = false; });
   }
 
   // Initialize language on load and handle state required toggle
@@ -726,7 +1043,7 @@
 <button type="button" id="mr-launch" aria-controls="mr-panel" aria-expanded="false"><span class="mr-face" aria-hidden="true">R</span><span id="mr-launch-txt">Ask Rachel</span></button>
 
 <section id="mr-panel" role="dialog" aria-modal="false" aria-labelledby="mr-title" hidden>
-  <div class="mr-top"><span class="mr-face" aria-hidden="true">R</span><div><b id="mr-title">Rachel</b><small id="mr-sub">Mache Haitien Global assistant</small></div><button type="button" class="mr-x" id="mr-close" aria-label="Close">×</button></div>
+  <div class="mr-top"><span class="mr-face" aria-hidden="true">R</span><div><b id="mr-title">Rachel</b><small id="mr-sub">Mache Ayisien Global assistant</small></div><button type="button" class="mr-x" id="mr-close" aria-label="Close">×</button></div>
   <div class="mr-bar">
     <button type="button" id="mr-voice" aria-pressed="true">🔊 Voice on</button>
     <label style="font-size:12.5px;color:#41566a;display:flex;gap:6px;align-items:center"><span id="mr-lang-lbl">Language</span>
@@ -736,7 +1053,7 @@
   <div id="mr-log" aria-live="polite"></div>
   <div class="mr-chips" id="mr-chips"></div>
   <form id="mr-form" autocomplete="off"><label for="mr-input" class="hidden">Message</label><input id="mr-input" maxlength="200" placeholder="Ask Rachel…"><button id="mr-send" type="submit">Send</button></form>
-  <div class="mr-foot" id="mr-foot">Rachel searches businesses listed in the Mache Haitien Global directory.</div>
+  <div class="mr-foot" id="mr-foot">Rachel searches businesses listed in the Mache Ayisien Global directory.</div>
 </section>
 
 <script>
@@ -744,8 +1061,8 @@
   'use strict';
   // ---------------- TEXT (English, French, Haitian Creole) ----------------
   const T = {
-    en: { launch: 'Ask Rachel', sub: 'Mache Haitien Global assistant', voiceOn: '🔊 Voice on', voiceOff: '🔇 Voice off', lang: 'Language', listen: '🔊 Listen', ph: 'Ask Rachel… e.g. "doctor in Miami"', send: 'Send', close: 'Close',
-      foot: 'Rachel searches businesses listed in the Mache Haitien Global directory.',
+    en: { launch: 'Ask Rachel', sub: 'Mache Ayisien Global assistant', voiceOn: '🔊 Voice on', voiceOff: '🔇 Voice off', lang: 'Language', listen: '🔊 Listen', ph: 'Ask Rachel… e.g. "doctor in Miami"', send: 'Send', close: 'Close',
+      foot: 'Rachel searches businesses listed in the Mache Ayisien Global directory.',
       hello: "Hi! I'm Rachel. I can help you find Haitian businesses in our directory. Tell me what you're looking for and where, for example: a doctor in Miami, or a restaurant in Port-au-Prince.",
       chips: ['Find a doctor', 'Find a lawyer', 'Find a restaurant', 'Add my business'],
       loading: 'Let me look in the directory…',
@@ -758,8 +1075,8 @@
       err: "Sorry, I couldn't reach the directory right now. Please check your connection and try again.",
       call: 'Call', wa: 'WhatsApp', web: 'Website', rev: 'Google reviews', yrs: 'In business', more: (n) => `…and ${n} more. Add a city or a business type to narrow it down.`,
       noVoice: "This phone or browser doesn't have a matching voice, so I'll answer in text. You can still read everything here." },
-    fr: { launch: 'Demandez à Rachel', sub: 'Assistante Mache Haitien Global', voiceOn: '🔊 Voix activée', voiceOff: '🔇 Voix coupée', lang: 'Langue', listen: '🔊 Écouter', ph: 'Demandez… ex. « médecin à Miami »', send: 'Envoyer', close: 'Fermer',
-      foot: "Rachel cherche les entreprises inscrites dans l'annuaire Mache Haitien Global.",
+    fr: { launch: 'Demandez à Rachel', sub: 'Assistante Mache Ayisien Global', voiceOn: '🔊 Voix activée', voiceOff: '🔇 Voix coupée', lang: 'Langue', listen: '🔊 Écouter', ph: 'Demandez… ex. « médecin à Miami »', send: 'Envoyer', close: 'Fermer',
+      foot: "Rachel cherche les entreprises inscrites dans l'annuaire Mache Ayisien Global.",
       hello: "Bonjour ! Je suis Rachel. Je peux vous aider à trouver des entreprises haïtiennes dans notre annuaire. Dites-moi ce que vous cherchez et où, par exemple : un médecin à Miami, ou un restaurant à Port-au-Prince.",
       chips: ['Trouver un médecin', 'Trouver un avocat', 'Trouver un restaurant', 'Ajouter mon entreprise'],
       loading: "Je cherche dans l'annuaire…",
@@ -772,8 +1089,8 @@
       err: "Désolée, je n'arrive pas à joindre l'annuaire pour le moment. Vérifiez votre connexion et réessayez.",
       call: 'Appeler', wa: 'WhatsApp', web: 'Site web', rev: 'Avis Google', yrs: 'En activité', more: (n) => `…et ${n} de plus. Ajoutez une ville ou un type d'entreprise pour affiner.`,
       noVoice: "Cet appareil n'a pas de voix française adaptée, je réponds donc par écrit." },
-    ht: { launch: 'Mande Rachel', sub: 'Asistan Mache Haitien Global', voiceOn: '🔊 Vwa limen', voiceOff: '🔇 Vwa fèmen', lang: 'Lang', listen: '🔊 Koute', ph: 'Mande Rachel… egz. "doktè Miami"', send: 'Voye', close: 'Fèmen',
-      foot: 'Rachel chèche biznis ki nan anyè Mache Haitien Global la.',
+    ht: { launch: 'Mande Rachel', sub: 'Asistan Mache Ayisien Global', voiceOn: '🔊 Vwa limen', voiceOff: '🔇 Vwa fèmen', lang: 'Lang', listen: '🔊 Koute', ph: 'Mande Rachel… egz. "doktè Miami"', send: 'Voye', close: 'Fèmen',
+      foot: 'Rachel chèche biznis ki nan anyè Mache Ayisien Global la.',
       hello: 'Bonjou! Mwen se Rachel. Mwen ka ede w jwenn biznis ayisyen nan anyè nou an. Di m sa w ap chèche ak ki kote, pa egzanp: yon doktè Miami, oswa yon restoran Pòtoprens.',
       chips: ['Jwenn yon doktè', 'Jwenn yon avoka', 'Jwenn yon restoran', 'Ajoute biznis mwen'],
       loading: 'M ap chèche nan anyè a…',
@@ -932,11 +1249,12 @@
     for (const [country, words] of Object.entries(COUNTRY)) for (const w of words) if (padded.includes(' ' + norm(w) + ' ')) return { type: 'country', value: country, label: country };
     for (const [code, name] of Object.entries(US_STATES)) if (padded.includes(' ' + name + ' ')) return { type: 'state', value: code, label: name.replace(/\b\w/g, c => c.toUpperCase()) };
     for (const [city, words] of Object.entries(CITY_ALIASES)) for (const w of words) if (padded.includes(' ' + norm(w) + ' ')) return { type: 'city', value: norm(city), label: city.replace(/\b\w/g, c => c.toUpperCase()) };
-    const cities = [...new Set(listings.map(l => norm(l.city)).filter(Boolean))].sort((a, b) => b.length - a.length);
+    const cities = [...new Set(listings.flatMap(l => [l.city].concat(Array.isArray(l.serviceCities) ? l.serviceCities : [])).map(c => norm(c)).filter(Boolean))].sort((a, b) => b.length - a.length);
     for (const c of cities) if (padded.includes(' ' + c + ' ')) return { type: 'city', value: c, label: c.replace(/\b\w/g, x => x.toUpperCase()) };
     return null;
   }
-  const cityMatches = (l, v) => { const c = norm(l.city).replace(/-/g, ' '); const vv = v.replace(/-/g, ' '); return c === vv || c.includes(vv) || vv.includes(c); };
+  const oneCity = (city, v) => { const c = norm(city).replace(/-/g, ' '); const vv = v.replace(/-/g, ' '); return !!c && (c === vv || c.includes(vv) || vv.includes(c)); };
+  const cityMatches = (l, v) => [l.city].concat(Array.isArray(l.serviceCities) ? l.serviceCities : []).some(c => oneCity(c, v));
   function matchPlace(l, p) {
     if (!p) return true;
     if (p.type === 'country') return l.country === p.value;
@@ -944,11 +1262,12 @@
     return cityMatches(l, p.value);
   }
   function card(l) {
-    const t = T[LANG]; const digits = String(l.phone || '').replace(/[^\d+]/g, ''); const wa = digits.replace(/^\+/, '');
+    const t = T[LANG]; const digits = String(l.phone || '').replace(/[^\d+]/g, ''); const wa = String(l.whatsappNumber || l.phone || '').replace(/[^\d]/g, '');
     const where = [l.city, l.usState, l.country].filter(Boolean).join(', ');
     const ind = l.industry === 'Other' && l.industryOther ? l.industryOther : l.industry;
     let html = `<div class="mr-card"><b>${esc(l.businessName)}</b><div class="mr-meta">${esc(ind)} · ${esc(where)}${l.yearsInBusiness ? ' · ' + esc(t.yrs) + ': ' + esc(l.yearsInBusiness) : ''}</div>`;
-    if (digits) html += `<a href="tel:${esc(digits)}">📞 ${esc(t.call)} ${esc(l.phone)}</a><a href="https://wa.me/${esc(wa)}" target="_blank" rel="noopener">💬 ${esc(t.wa)}</a>`;
+    if (digits) html += `<a href="tel:${esc(digits)}">📞 ${esc(t.call)} ${esc(l.phone)}</a>`;
+    if (wa) html += `<a href="https://wa.me/${esc(wa)}" target="_blank" rel="noopener">💬 ${esc(t.wa)}</a>`;
     if (/^https?:\/\//i.test(l.website || '')) html += `<a href="${esc(l.website)}" target="_blank" rel="noopener nofollow">🌐 ${esc(t.web)}</a>`;
     { const rv = /^https?:\/\//i.test(l.googleReviewUrl || '') ? l.googleReviewUrl : 'https://www.google.com/search?q=' + encodeURIComponent((l.businessName || '') + ' ' + (l.city || '') + ' reviews');
       html += `<a href="${esc(rv)}" target="_blank" rel="noopener nofollow">⭐ ${esc(t.rev || 'Google reviews')}</a>`; }
@@ -1276,6 +1595,10 @@ window.MHG_PAYMENT = {
       source: data.source || 'mache-haitien-global-web',
       googleReviewUrl: data.googleReviewUrl || '',
       photoCount: (data.photoCount || 0),
+      whatsappNumber: data.whatsappNumber || '',
+      serviceCities: data.serviceCities || [],
+      serviceMode: data.serviceMode || '',
+      licensed: data.licensed || '',
       status: 'published',
       payment: payment
     };
@@ -1306,11 +1629,19 @@ window.MHG_PAYMENT = {
         return subRef.id;
       }
       const listRef = doc(db, 'business_listings', subRef.id);
-      const batch = writeBatch(db);
-      batch.set(subRef, { ...data, payment: payment, createdAt: serverTimestamp() });
-      batch.set(listRef, { ...listingFrom(data, payment), createdAt: serverTimestamp() });
-      if (photos.length) batch.set(doc(db, 'listing_photos', subRef.id), { photos: photos, createdAt: serverTimestamp() });
-      await batch.commit();
+      const NEW = ['whatsappNumber', 'serviceCities', 'serviceMode', 'licensed'];
+      const strip = o => { const c = { ...o }; NEW.forEach(k => delete c[k]); return c; };
+      const write = async (lean) => {
+        const batch = writeBatch(db);
+        const sub = { ...data, payment: payment, createdAt: serverTimestamp() };
+        const pub = { ...listingFrom(data, payment), createdAt: serverTimestamp() };
+        batch.set(subRef, lean ? strip(sub) : sub);
+        batch.set(listRef, lean ? strip(pub) : pub);
+        if (photos.length) batch.set(doc(db, 'listing_photos', subRef.id), { photos: photos, createdAt: serverTimestamp() });
+        await batch.commit();
+      };
+      try { await write(false); }
+      catch (e) { if (e && e.code === 'permission-denied') await write(true); else throw e; } // older rules: save without the new questions
       if (window.MHGPhotos) window.MHGPhotos.clear();
       listingsCache = null; // so Rachel finds the new business right away
       showSaved(lang, true); resetForm();
@@ -1365,7 +1696,7 @@ window.MHG_PAYMENT = {
   // ---------- Text for the new buttons, in all 4 languages ----------
   var UI = {
     en: { share: 'Share', install: 'Install App', installed: 'App installed ✓', copied: 'Link copied! Paste it anywhere to share.',
-          shareText: 'Join Mache Haitien Global, the directory connecting Haitian businesses worldwide.',
+          shareText: 'Join Mache Ayisien Global, the directory connecting Haitian businesses worldwide.',
           title: 'Haiti Business Directory',
           iosTitle: 'Install on iPhone / iPad',
           iosSteps: ['Tap the Share button (the square with an arrow) at the bottom of Safari.', 'Scroll down and tap “Add to Home Screen”.', 'Tap “Add”. The app icon appears on your home screen.'],
@@ -1374,7 +1705,7 @@ window.MHG_PAYMENT = {
           otherSteps: ['Open your browser menu (⋮ or ⋯).', 'Tap “Install app” or “Add to Home screen”.', 'Confirm. The app icon appears on your home screen.'],
           otherNote: '', ok: 'Got it' },
     fr: { share: 'Partager', install: "Installer l'app", installed: 'App installée ✓', copied: 'Lien copié ! Collez-le où vous voulez pour partager.',
-          shareText: "Rejoignez Mache Haitien Global, l'annuaire qui relie les entreprises haïtiennes du monde entier.",
+          shareText: "Rejoignez Mache Ayisien Global, l'annuaire qui relie les entreprises haïtiennes du monde entier.",
           title: 'Annuaire des entreprises haïtiennes',
           iosTitle: 'Installer sur iPhone / iPad',
           iosSteps: ['Touchez le bouton Partager (le carré avec une flèche) en bas de Safari.', 'Faites défiler et touchez « Sur l’écran d’accueil ».', 'Touchez « Ajouter ». L’icône de l’app apparaît sur votre écran d’accueil.'],
@@ -1383,7 +1714,7 @@ window.MHG_PAYMENT = {
           otherSteps: ['Ouvrez le menu du navigateur (⋮ ou ⋯).', 'Touchez « Installer l’application » ou « Ajouter à l’écran d’accueil ».', 'Confirmez. L’icône de l’app apparaît sur votre écran d’accueil.'],
           otherNote: '', ok: 'Compris' },
     ht: { share: 'Pataje', install: 'Enstale app la', installed: 'App la enstale ✓', copied: 'Lyen an kopye! Kole l kote ou vle pou pataje l.',
-          shareText: 'Antre nan Mache Haitien Global, anyè ki konekte biznis ayisyen atravè lemond.',
+          shareText: 'Antre nan Mache Ayisien Global, anyè ki konekte biznis ayisyen atravè lemond.',
           title: 'Anyè Biznis Ayisyen',
           iosTitle: 'Enstale sou iPhone / iPad',
           iosSteps: ['Peze bouton Pataje a (kare ak yon flèch) anba nan Safari.', 'Desann epi peze « Add to Home Screen » (Ajoute sou ekran dakèy).', 'Peze « Add » (Ajoute). Ikòn app la ap parèt sou ekran dakèy ou.'],
@@ -1392,7 +1723,7 @@ window.MHG_PAYMENT = {
           otherSteps: ['Louvri meni navigatè a (⋮ oswa ⋯).', 'Peze « Install app » oswa « Add to Home screen » (Ajoute sou ekran dakèy).', 'Konfime. Ikòn app la ap parèt sou ekran dakèy ou.'],
           otherNote: '', ok: 'Mwen konprann' },
     es: { share: 'Compartir', install: 'Instalar app', installed: 'App instalada ✓', copied: '¡Enlace copiado! Péguelo donde quiera para compartir.',
-          shareText: 'Únase a Mache Haitien Global, el directorio que conecta negocios haitianos en todo el mundo.',
+          shareText: 'Únase a Mache Ayisien Global, el directorio que conecta negocios haitianos en todo el mundo.',
           title: 'Directorio de Negocios Haitianos',
           iosTitle: 'Instalar en iPhone / iPad',
           iosSteps: ['Toque el botón Compartir (el cuadrado con una flecha) abajo en Safari.', 'Desplácese y toque «Agregar a pantalla de inicio».', 'Toque «Agregar». El ícono de la app aparece en su pantalla de inicio.'],
@@ -1459,7 +1790,11 @@ window.MHG_PAYMENT = {
     'TV': ['Télévision', 'Televizyon', 'Televisión'],
     'Online': ['En ligne', 'Sou entènèt', 'En línea'],
     'Word of Mouth': ['Bouche-à-oreille', 'Bouch an bouch', 'Boca a boca'],
-    'Referrals': ['Recommandations', 'Referans', 'Referidos']
+    'Referrals': ['Recommandations', 'Referans', 'Referidos'],
+    'Choose one': ['Choisir', 'Chwazi youn', 'Elija una opción'],
+    'Storefront / office with a permanent address': ['Magasin / bureau avec une adresse fixe', 'Magazen / biwo ak yon adrès fiks', 'Tienda / oficina con dirección fija'],
+    'By appointment only': ['Sur rendez-vous uniquement', 'Sou randevou sèlman', 'Solo con cita'],
+    'Mobile (food truck, I come to you, no permanent address)': ['Mobile (food truck, je me déplace, pas d’adresse fixe)', 'Mobil (food truck, mwen vin jwenn ou, pa gen adrès fiks)', 'Móvil (food truck, voy a usted, sin dirección fija)']
   };
   var IDX = { fr: 0, ht: 1, es: 2 };
 
@@ -1524,7 +1859,7 @@ window.MHG_PAYMENT = {
   document.getElementById('mhgShare').addEventListener('click', function () {
     var t = UI[current()], url = location.href.split('#')[0].split('?')[0];
     if (navigator.share) {
-      navigator.share({ title: 'Mache Haitien Global', text: t.shareText, url: url }).catch(function () {});
+      navigator.share({ title: 'Mache Ayisien Global', text: t.shareText, url: url }).catch(function () {});
     } else if (navigator.clipboard) {
       navigator.clipboard.writeText(t.shareText + ' ' + url).then(function () { showToast(t.copied); }, function () { window.prompt('', url); });
     } else {
