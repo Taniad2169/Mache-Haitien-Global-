@@ -1,6 +1,6 @@
 // Mache Haitien Global service worker: makes the page installable and opens it offline.
 // Only same-origin files are cached; Firebase, WhatsApp and YouTube always go to the network.
-const CACHE = 'mhg-v2';
+const CACHE = 'mhg-v3';
 const SHELL = ['./', './index.html', './manifest.json', './icon-192.png', './icon-512.png', './apple-touch-icon.png'];
 self.addEventListener('install', e => {
   e.waitUntil(caches.open(CACHE).then(c => c.addAll(SHELL)).then(() => self.skipWaiting()));
@@ -11,6 +11,8 @@ self.addEventListener('activate', e => {
 self.addEventListener('fetch', e => {
   const req = e.request;
   if (req.method !== 'GET' || new URL(req.url).origin !== self.location.origin) return;
+  // Videos stream straight from the network (range requests cannot be cached).
+  if (req.headers.has('range') || /\.mp4($|\?)/.test(new URL(req.url).pathname)) return;
   // Network first so updates show right away; fall back to the saved copy when offline.
   e.respondWith(fetch(req).then(res => {
     if (res.ok) { const copy = res.clone(); caches.open(CACHE).then(c => c.put(req, copy)); }
